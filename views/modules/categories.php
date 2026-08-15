@@ -13,17 +13,15 @@ if($_SESSION["profile"] == "Seller"){
 }
 
 ?>
-<!-- Log on to codeastro.com for more projects! -->
+
 <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>
-        Category Management
-      </h1>
+      <div><span class="pos-section-label">Catalogue</span><h1>Categories</h1><p class="pos-page-description">Organise products into clear groups for a faster checkout.</p></div>
       <ol class="breadcrumb">
         <li><a href="home"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Dashboard</li>
+        <li class="active">Categories</li>
       </ol>
     </section>
 
@@ -33,7 +31,7 @@ if($_SESSION["profile"] == "Seller"){
       <!-- Default box -->
       <div class="box">
         <div class="box-header with-border">
-          <button class="btn btn-success" data-toggle="modal" data-target="#addCategories"> <i class="fa fa-plus"></i> Add Categories</button>
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCategories"> <i class="fa fa-plus"></i> Add Categories</button>
 
         </div>
         <div class="box-body">
@@ -70,7 +68,7 @@ if($_SESSION["profile"] == "Seller"){
 
                             <div class="btn-group">
 
-                              <button class="btn btn-primary btnEditCategory" idCategory="'.$value["id"].'" data-toggle="modal" data-target="#editCategories"><i class="fa fa-pencil"></i></button>
+                              <button class="btn btn-primary btnEditCategory" idCategory="'.$value["id"].'" data-bs-toggle="modal" data-bs-target="#editCategories"><i class="fa fa-pencil"></i></button>
 
                               '.(current_user_role() === 'Administrator' ? '<button class="btn btn-danger btnDeleteCategory" idCategory="'.(int)$value["id"].'"><i class="fa fa-trash"></i></button>' : '').'
 
@@ -87,7 +85,7 @@ if($_SESSION["profile"] == "Seller"){
 
           </table>
 
-		<!-- Log on to codeastro.com for more projects! -->
+
 
         </div>
 
@@ -102,7 +100,7 @@ if($_SESSION["profile"] == "Seller"){
 <!--=====================================
 =            module add Categories            =
 ======================================-->
-<!-- Log on to codeastro.com for more projects! -->
+
 <!-- Modal -->
 <div id="addCategories" class="modal fade" role="dialog">
   <div class="modal-dialog">
@@ -111,7 +109,7 @@ if($_SESSION["profile"] == "Seller"){
     <div class="modal-content">
       <form role="form" method="POST">
         <div class="modal-header" style="background: #DD4B39; color: #fff">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
           <h4 class="modal-title">Add Categories</h4>
         </div>
         <div class="modal-body">
@@ -128,7 +126,7 @@ if($_SESSION["profile"] == "Seller"){
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger pull-left" data-bs-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-success">Save Category</button>
         </div>
       </form>
@@ -143,7 +141,7 @@ if($_SESSION["profile"] == "Seller"){
   $createCategory -> ctrCreateCategory();
 ?>
 
-<!-- Log on to codeastro.com for more projects! -->
+
 <!--=====================================
 =            module edit Categories            =
 ======================================-->
@@ -156,7 +154,7 @@ if($_SESSION["profile"] == "Seller"){
     <div class="modal-content">
       <form role="form" method="POST">
         <div class="modal-header" style="background: #DD4B39; color: #fff">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
           <h4 class="modal-title">Edit Categories</h4>
         </div>
         <div class="modal-body">
@@ -170,11 +168,11 @@ if($_SESSION["profile"] == "Seller"){
                 <input type="hidden" name="idCategory" id="idCategory" required>
               </div>
             </div>
-			<!-- Log on to codeastro.com for more projects! -->
+
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger pull-left" data-bs-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-success">Save Changes</button>
         </div>
 
@@ -188,7 +186,7 @@ if($_SESSION["profile"] == "Seller"){
 
   </div>
 </div>
-<!-- Log on to codeastro.com for more projects! -->
+
 <?php
 
   $deleteCategory = new ControllerCategories();

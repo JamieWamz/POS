@@ -10,18 +10,14 @@ if (!$saleId) {
 
   <section class="content-header">
 
-    <h1>
-
-      Edit Sale
-
-    </h1>
+    <div><span class="pos-section-label">Administrator</span><h1>Edit sale</h1><p class="pos-page-description">Correct the order while preserving inventory and financial history.</p></div>
 
     <ol class="breadcrumb">
 
       <li><a href="home"><i class="fa fa-dashboard"></i> Home</a></li>
 
       <li class="active">Edit Sale</li>
-		<!-- Log on to codeastro.com for more projects! -->
+
     </ol>
 
   </section>
@@ -85,7 +81,7 @@ if (!$saleId) {
                         <input type="hidden" name="idSeller" value="<?php echo (int) ($seller["id"] ?? 0); ?>">
 
                       </div>
-					<!-- Log on to codeastro.com for more projects! -->
+
                     </div>
 
 
@@ -112,7 +108,7 @@ if (!$saleId) {
                     =            CUSTOMER INPUT           =
                     ======================================-->
 
-                    <!-- Log on to codeastro.com for more projects! -->
+
                     <div class="form-group">
 
                       <div class="input-group">
@@ -139,10 +135,10 @@ if (!$saleId) {
 
                         </select>
 
-                        <span class="input-group-addon"><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modalAddCustomer" data-dismiss="modal">Add Customer</button></span>
+                        <span class="input-group-addon"><button type="button" class="btn btn-primary btn-xs" data-bs-toggle="modal" data-bs-target="#modalAddCustomer">Add Customer</button></span>
 
                       </div>
-					<!-- Log on to codeastro.com for more projects! -->
+
                     </div>
 
                     <!--=====================================
@@ -214,7 +210,7 @@ if (!$saleId) {
                     <button type="button" class="btn btn-default hidden-lg btnAddProduct">Add Product</button>
 
                     <hr>
-					<!-- Log on to codeastro.com for more projects! -->
+
                     <div class="row">
 
                       <!--=====================================
@@ -251,7 +247,7 @@ if (!$saleId) {
 
                                 </div>
                               </td>
-								<!-- Log on to codeastro.com for more projects! -->
+
                               <td style="width: 50%">
 
                                 <div class="input-group">
@@ -317,7 +313,7 @@ if (!$saleId) {
                 </div>
 
             </div>
-			<!-- Log on to codeastro.com for more projects! -->
+
             <div class="box-footer">
               <button type="submit" class="btn btn-success pull-right">Save Changes</button>
             </div>
@@ -360,7 +356,7 @@ if (!$saleId) {
                      <th>Description</th>
                      <th>Stock</th>
                      <th>Actions</th>
-					<!-- Log on to codeastro.com for more projects! -->
+
                    </tr>
 
                 </thead>
@@ -393,7 +389,7 @@ if (!$saleId) {
     <div class="modal-content">
       <form role="form" method="POST">
         <div class="modal-header" style="background: #DD4B39; color: #fff">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
           <h4 class="modal-title">Add Customer</h4>
         </div>
         <div class="modal-body">
@@ -451,10 +447,10 @@ if (!$saleId) {
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger pull-left" data-bs-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-success">Save Customer</button>
         </div>
-      </form><!-- Log on to codeastro.com for more projects! -->
+      </form>
 
       <?php
 
@@ -465,6 +461,6 @@ if (!$saleId) {
     </div>
 
   </div>
-</div><!-- Log on to codeastro.com for more projects! -->
+</div>
 
 <!--====  End of module add Customer  ====-->

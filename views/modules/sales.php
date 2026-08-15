@@ -14,17 +14,13 @@ if($_SESSION["profile"] == "Special"){
 
   <section class="content-header">
 
-    <h1>
-	<!-- Log on to codeastro.com for more projects! -->
-      Golden Pub Sales Management
-
-    </h1>
+    <div><span class="pos-section-label">Sales</span><h1>Sales history</h1><p class="pos-page-description">Find transactions, reprint receipts and export invoice records.</p></div>
 
     <ol class="breadcrumb">
 
       <li><a href="home"><i class="fa fa-dashboard"></i> Home</a></li>
 
-      <li class="active">Dashboard</li>
+      <li class="active">Sales history</li>
 
     </ol>
 
@@ -57,7 +53,7 @@ if($_SESSION["profile"] == "Special"){
       </div>
 
       <div class="box-body">
-		<!-- Log on to codeastro.com for more projects! -->
+
         <table class="table table-bordered table-hover table-striped dt-responsive tables" width="100%">
 
           <thead>
@@ -165,7 +161,7 @@ if($_SESSION["profile"] == "Special"){
       </div>
 
     </div>
-	<!-- Log on to codeastro.com for more projects! -->
+
   </section>
 
 </div>

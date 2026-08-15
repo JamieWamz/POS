@@ -1,47 +1,68 @@
-<main class="pos-login" role="main">
-  <section class="pos-login__brand" aria-label="Golden Tap POS">
-    <div class="pos-login__brand-content">
-      <span class="pos-brand-mark">GT</span>
-      <p class="pos-eyebrow">Golden Tap</p>
-      <h1>A faster, clearer way to run every shift.</h1>
-      <p>Sales, stock, customers, and daily performance in one focused workspace.</p>
-      <div class="pos-login__features">
-        <span><i class="fa fa-bolt"></i> Fast checkout</span>
-        <span><i class="fa fa-lock"></i> Secure access</span>
-        <span><i class="fa fa-line-chart"></i> Live reporting</span>
-      </div>
-    </div>
-  </section>
-  <section class="pos-login__panel">
-    <div class="login-box">
-      <div class="login-box-body">
-        <div class="pos-login__heading">
-          <span class="pos-brand-mark pos-brand-mark--small">GT</span>
-          <div>
-            <p class="pos-eyebrow">Welcome back</p>
-            <h2>Sign in to your register</h2>
-          </div>
+<main class="pos-login">
+  <div class="container-fluid pos-login__container">
+    <div class="row g-0 pos-login__layout">
+      <section class="col-lg-7 pos-login__identity" aria-labelledby="loginBrandTitle">
+        <div class="pos-login__brandline">
+          <span class="pos-brand-mark">GT</span>
+          <span>
+            <strong><?php echo e(app_config('business.name', 'Golden Tap')); ?></strong>
+            <small>Point of sale</small>
+          </span>
         </div>
-        <form method="post" autocomplete="on">
-          <?php echo csrf_field(); ?>
-          <div class="form-group">
-            <label for="loginUser">Username</label>
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-user"></i></span>
-              <input id="loginUser" type="text" class="form-control input-lg" placeholder="Your username" name="loginUser" autocomplete="username" required autofocus>
-            </div>
+
+        <div class="pos-login__intro">
+          <span class="pos-section-label">Staff workspace</span>
+          <h1 id="loginBrandTitle">Sales, stock and daily operations.</h1>
+          <p>Use this register to process transactions, issue receipts and keep inventory records current.</p>
+        </div>
+
+        <dl class="pos-login__details">
+          <div>
+            <dt>Location</dt>
+            <dd><?php echo e(app_config('business.address', 'Kafue')); ?></dd>
           </div>
-          <div class="form-group">
-            <label for="loginPass">Password</label>
-            <div class="input-group">
-              <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-              <input id="loginPass" type="password" class="form-control input-lg" placeholder="Your password" name="loginPass" autocomplete="current-password" required>
-            </div>
+          <div>
+            <dt>Business time</dt>
+            <dd><?php echo e(date('H:i')); ?> · <?php echo e(app_config('timezone', 'Africa/Lusaka')); ?></dd>
           </div>
-          <button type="submit" class="btn btn-primary btn-lg btn-block">Sign in <i class="fa fa-arrow-right"></i></button>
-          <?php (new ControllerUsers())->ctrUserLogin(); ?>
-        </form>
-      </div>
+          <div>
+            <dt>Tax setting</dt>
+            <dd><?php echo e(app_config('business.tax_label', 'VAT')); ?> <?php echo e(number_format((float) app_config('business.default_tax_rate', 16), 0)); ?>%</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="col-lg-5 pos-login__access">
+        <div class="pos-login-card">
+          <div class="pos-login-card__heading">
+            <span class="pos-section-label">Authorised staff only</span>
+            <h2>Sign in</h2>
+            <p>Enter the username and password assigned by your administrator.</p>
+          </div>
+
+          <form method="post" autocomplete="on">
+            <?php echo csrf_field(); ?>
+            <div class="mb-3">
+              <label class="form-label" for="loginUser">Username</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text"><i class="fa fa-user" aria-hidden="true"></i></span>
+                <input id="loginUser" type="text" class="form-control" name="loginUser" autocomplete="username" required autofocus>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label" for="loginPass">Password</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text"><i class="fa fa-lock" aria-hidden="true"></i></span>
+                <input id="loginPass" type="password" class="form-control" name="loginPass" autocomplete="current-password" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-100">Sign in to register</button>
+            <?php (new ControllerUsers())->ctrUserLogin(); ?>
+          </form>
+
+          <p class="pos-login-card__help"><i class="fa fa-shield" aria-hidden="true"></i> Sessions are protected and administrator actions are recorded.</p>
+        </div>
+      </section>
     </div>
-  </section>
+  </div>
 </main>

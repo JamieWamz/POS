@@ -11,7 +11,7 @@ $recentActivity = ModelAudit::recent(7);
   <div class="col-lg-8 col-xs-12">
     <section class="box">
       <header class="box-header">
-        <div><span class="pos-eyebrow">Live operations</span><h3 class="box-title">Recent transactions</h3></div>
+        <div><span class="pos-eyebrow">Sales</span><h3 class="box-title">Recent transactions</h3></div>
         <a class="btn btn-default" href="sales">View all</a>
       </header>
       <div class="box-body table-responsive no-padding">
@@ -36,7 +36,7 @@ $recentActivity = ModelAudit::recent(7);
   </div>
   <div class="col-lg-4 col-xs-12">
     <section class="box pos-quick-actions">
-      <header class="box-header"><div><span class="pos-eyebrow">Shortcuts</span><h3 class="box-title">Run the floor</h3></div></header>
+      <header class="box-header"><div><span class="pos-eyebrow">Shortcuts</span><h3 class="box-title">Common tasks</h3></div></header>
       <div class="box-body">
         <a href="create-sale"><i class="fa fa-plus-circle"></i><span><strong>Start a sale</strong><small>Open the checkout</small></span><i class="fa fa-chevron-right"></i></a>
         <a href="products"><i class="fa fa-cube"></i><span><strong>Update inventory</strong><small>Prices, stock, and products</small></span><i class="fa fa-chevron-right"></i></a>
@@ -50,7 +50,7 @@ $recentActivity = ModelAudit::recent(7);
   <div class="col-lg-6 col-xs-12">
     <section class="box">
       <header class="box-header">
-        <div><span class="pos-eyebrow">Inventory watch</span><h3 class="box-title">Low-stock alerts</h3></div>
+        <div><span class="pos-eyebrow">Inventory</span><h3 class="box-title">Low-stock items</h3></div>
         <span class="pos-count-badge"><?php echo count($stockAlerts); ?></span>
       </header>
       <div class="box-body pos-alert-list">
@@ -67,7 +67,7 @@ $recentActivity = ModelAudit::recent(7);
   </div>
   <div class="col-lg-6 col-xs-12">
     <section class="box">
-      <header class="box-header"><div><span class="pos-eyebrow">Accountability</span><h3 class="box-title">Recent administrator activity</h3></div></header>
+      <header class="box-header"><div><span class="pos-eyebrow">Administration</span><h3 class="box-title">Recent account activity</h3></div></header>
       <div class="box-body pos-activity-list">
         <?php if ($recentActivity === []): ?><div class="pos-inline-empty">Activity appears after the database migration is applied.</div><?php endif; ?>
         <?php foreach ($recentActivity as $activity): ?>

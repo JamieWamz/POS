@@ -17,11 +17,7 @@ if($_SESSION["profile"] == "Special"){
 
   <section class="content-header">
 
-    <h1><!-- Log on to codeastro.com for more projects! -->
-
-      Sales report
-
-    </h1>
+    <div><span class="pos-section-label">Business</span><h1>Sales report</h1><p class="pos-page-description">Compare revenue, transactions and products across a selected period.</p></div>
 
     <ol class="breadcrumb">
 
@@ -52,7 +48,7 @@ if($_SESSION["profile"] == "Special"){
           </button>
 
         </div>
-		<!-- Log on to codeastro.com for more projects! -->
+
         <div class="box-tools pull-right">
 
 
@@ -130,5 +126,5 @@ if($_SESSION["profile"] == "Special"){
     </div>
 
   </section>
-	<!-- Log on to codeastro.com for more projects! -->
+
  </div>

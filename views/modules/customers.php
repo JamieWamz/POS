@@ -18,15 +18,13 @@ if($_SESSION["profile"] == "Special"){
 
   <section class="content-header">
 
-    <h1>
-      Customer management
-    </h1>
+    <div><span class="pos-section-label">Sales</span><h1>Customers</h1><p class="pos-page-description">Maintain contact details and purchase history for real customers.</p></div>
 
     <ol class="breadcrumb">
 
       <li><a href="home"><i class="fa fa-dashboard"></i> Home</a></li>
 
-      <li class="active">Dashboard</li>
+      <li class="active">Customers</li>
 
     </ol>
 
@@ -38,7 +36,7 @@ if($_SESSION["profile"] == "Special"){
 
       <div class="box-header with-border">
 
-        <button class="btn btn-success" data-toggle="modal" data-target="#addCustomer">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCustomer">
 
         Add Customer
 
@@ -103,7 +101,7 @@ if($_SESSION["profile"] == "Special"){
 
                         <div class="btn-group">
 
-                          <button class="btn btn-primary btnEditCustomer" data-toggle="modal" data-target="#modalEditCustomer" idCustomer="'.$value["id"].'"><i class="fa fa-pencil"></i></button>
+                          <button class="btn btn-primary btnEditCustomer" data-bs-toggle="modal" data-bs-target="#modalEditCustomer" idCustomer="'.$value["id"].'"><i class="fa fa-pencil"></i></button>
 
                           '.(current_user_role() === 'Administrator' ? '<button class="btn btn-danger btnDeleteCustomer" idCustomer="'.(int)$value["id"].'"><i class="fa fa-trash"></i></button>' : '').'
 
@@ -147,7 +145,7 @@ MODAL ADD CUSTOMER
 
         <div class="modal-header" style="background: #DD4B39; color: #fff">
 
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 
           <h4 class="modal-title">Add Customer</h4>
 
@@ -215,7 +213,7 @@ MODAL ADD CUSTOMER
         ======================================-->
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger pull-left" data-bs-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-success">Save Customer</button>
         </div>
       </form>
@@ -250,7 +248,7 @@ MODAL EDIT CUSTOMER
 
         <div class="modal-header" style="background:#DD4B39; color:white">
 
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 
           <h4 class="modal-title">Edit Customer</h4>
 
@@ -344,7 +342,7 @@ MODAL EDIT CUSTOMER
 
         <div class="modal-footer">
 
-          <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger pull-left" data-bs-dismiss="modal">Close</button>
 
           <button type="submit" class="btn btn-success">Save Changes</button>
 

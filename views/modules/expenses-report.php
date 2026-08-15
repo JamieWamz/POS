@@ -9,7 +9,7 @@ if($_SESSION["profile"] == "Special"){
 <div class="content-wrapper">
 
   <section class="content-header">
-    <h1>Expenses Report</h1>
+    <div><span class="pos-section-label">Business</span><h1>Expense report</h1><p class="pos-page-description">Review spend by date, category and team member.</p></div>
     <ol class="breadcrumb">
       <li><a href="home"><i class="fa fa-dashboard"></i> Home</a></li>
       <li class="active">Expenses Report</li>

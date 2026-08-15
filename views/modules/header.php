@@ -1,40 +1,64 @@
-<header class="main-header">
-  <a href="home" class="logo" aria-label="Golden Tap POS home">
-    <span class="logo-mini">GT</span>
-    <span class="logo-lg"><strong>Golden Tap</strong><small> POS</small></span>
-  </a>
-  <nav class="navbar navbar-static-top" role="navigation" aria-label="Account controls">
-    <a class="sidebar-toggle" data-toggle="push-menu" role="button" href="#" aria-label="Toggle navigation">
-      <span class="sr-only">Toggle navigation</span>
-    </a>
-    <div class="pos-register-title">
-      <span class="pos-eyebrow">Point of sale</span>
-      <strong><?php echo e(date('l, j F')); ?></strong>
+<?php
+$routeKey = isset($_GET['route']) ? (string) $_GET['route'] : 'home';
+$routeNames = [
+    'home' => 'Dashboard',
+    'create-sale' => 'New sale',
+    'edit-sale' => 'Edit sale',
+    'sales' => 'Sales',
+    'products' => 'Products',
+    'categories' => 'Categories',
+    'customers' => 'Customers',
+    'expenses' => 'Expenses',
+    'reports' => 'Sales reports',
+    'expenses-report' => 'Expense reports',
+    'users' => 'Team access',
+    'activity' => 'Activity log',
+];
+$routeName = $routeNames[$routeKey] ?? 'Golden Tap POS';
+$canSell = user_has_role(['Administrator', 'Seller']);
+?>
+<header class="pos-topbar">
+  <div class="pos-topbar__context">
+    <button class="btn pos-nav-toggle" type="button" data-pos-nav-toggle aria-controls="posSidebar" aria-expanded="false">
+      <i class="fa fa-bars" aria-hidden="true"></i>
+      <span class="visually-hidden">Open navigation</span>
+    </button>
+    <div>
+      <span class="pos-topbar__date"><?php echo e(date('l, j F')); ?></span>
+      <strong><?php echo e($routeName); ?></strong>
     </div>
-    <div class="navbar-custom-menu">
-      <ul class="nav navbar-nav">
-        <li class="dropdown user user-menu">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-            <img class="user-image" src="<?php echo e($_SESSION['photo'] ?: 'views/img/users/default/prfplaceholder.png'); ?>" alt="">
-            <span class="hidden-xs pos-user-copy">
-              <strong><?php echo e($_SESSION['name']); ?></strong>
-              <small><?php echo e($_SESSION['profile']); ?></small>
-            </span>
-          </a>
-          <ul class="dropdown-menu pos-account-menu">
-            <li class="user-header">
-              <strong><?php echo e($_SESSION['name']); ?></strong>
-              <span><?php echo e($_SESSION['user']); ?> · <?php echo e($_SESSION['profile']); ?></span>
-            </li>
-            <li class="user-footer">
-              <form method="post" action="logout">
-                <?php echo csrf_field(); ?>
-                <button class="btn btn-default btn-block" type="submit"><i class="fa fa-sign-out"></i> Sign out</button>
-              </form>
-            </li>
-          </ul>
-        </li>
-      </ul>
+  </div>
+
+  <div class="pos-topbar__actions">
+    <?php if ($canSell && !in_array($routeKey, ['home', 'create-sale'], true)): ?>
+      <a class="btn btn-primary d-none d-sm-inline-flex align-items-center gap-2" href="create-sale">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        New sale
+      </a>
+    <?php endif; ?>
+
+    <div class="dropdown">
+      <button class="btn pos-user-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="<?php echo e($_SESSION['photo'] ?: 'views/img/users/default/prfplaceholder.png'); ?>" alt="">
+        <span class="d-none d-md-flex">
+          <strong><?php echo e($_SESSION['name']); ?></strong>
+          <small><?php echo e($_SESSION['profile']); ?></small>
+        </span>
+      </button>
+      <div class="dropdown-menu dropdown-menu-end pos-account-menu">
+        <div class="pos-account-menu__identity">
+          <strong><?php echo e($_SESSION['name']); ?></strong>
+          <span>@<?php echo e($_SESSION['user']); ?></span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <form method="post" action="logout">
+          <?php echo csrf_field(); ?>
+          <button class="dropdown-item" type="submit">
+            <i class="fa fa-sign-out" aria-hidden="true"></i>
+            Sign out
+          </button>
+        </form>
+      </div>
     </div>
-  </nav>
+  </div>
 </header>

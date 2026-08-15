@@ -14,27 +14,20 @@ if($_SESSION["profile"] == "Seller"){
 <div class="content-wrapper">
 
   <section class="content-header">
-
-    <h1>
-
-      Dashboard
-
-
-    </h1>
-
-    <ol class="breadcrumb">
-
-      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-
-      <li class="active">Dashboard</li>
-
-    </ol>
+    <div>
+      <span class="pos-section-label">Today</span>
+      <h1>Golden Tap overview</h1>
+      <p class="pos-page-description">Sales, expenses and stock status for <?php echo e(date('l, j F Y')); ?>.</p>
+    </div>
+    <?php if (user_has_role(['Administrator', 'Seller'])): ?>
+      <a class="btn btn-primary" href="create-sale"><i class="fa fa-plus" aria-hidden="true"></i> New sale</a>
+    <?php endif; ?>
 
   </section>
 
   <section class="content">
 
-    <div class="row">
+    <div class="row g-0 pos-daily-tally">
 
       <?php
 
@@ -46,7 +39,7 @@ if($_SESSION["profile"] == "Seller"){
 
       ?>
 
-    </div><!-- Log on to codeastro.com for more projects! -->
+    </div>
 
     <?php if($_SESSION["profile"] === "Administrator") { include "home/admin-operations.php"; } ?>
 
@@ -78,7 +71,7 @@ if($_SESSION["profile"] == "Seller"){
 
         ?>
 
-      </div><!-- Log on to codeastro.com for more projects! -->
+      </div>
 
        <div class="col-lg-6">
 
@@ -121,4 +114,3 @@ if($_SESSION["profile"] == "Seller"){
   </section>
 
 </div>
-<!-- Log on to codeastro.com for more projects! -->

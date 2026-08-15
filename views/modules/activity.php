@@ -5,7 +5,7 @@ $activityRows = ModelAudit::recent(200);
 ?>
 <div class="content-wrapper">
   <section class="content-header">
-    <h1>Activity log</h1>
+    <div><span class="pos-section-label">Administration</span><h1>Activity log</h1><p class="pos-page-description">Review sign-ins and changes to sales, stock, users and reports.</p></div>
     <ol class="breadcrumb"><li><a href="home"><i class="fa fa-dashboard"></i> Home</a></li><li class="active">Activity log</li></ol>
   </section>
   <section class="content">

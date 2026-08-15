@@ -1,52 +1,47 @@
-/*====================================
-=            sidebar menu            =
-====================================*/
+(function () {
+  'use strict';
 
-$('.sidebar-menu').tree();
+  function closeNavigation() {
+    document.body.classList.remove('pos-nav-open');
+    var toggle = document.querySelector('[data-pos-nav-toggle]');
+    if (toggle) toggle.setAttribute('aria-expanded', 'false');
+  }
 
-/*=====  End of sidebar menu  ======*/
+  document.addEventListener('click', function (event) {
+    var toggle = event.target.closest('[data-pos-nav-toggle]');
+    if (toggle) {
+      var open = document.body.classList.toggle('pos-nav-open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      return;
+    }
 
+    if (event.target.closest('[data-pos-nav-close]') || event.target.closest('.pos-nav-link')) {
+      closeNavigation();
+    }
+  });
 
-/*=================================
-=            datatable            =
-=================================*/
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') closeNavigation();
+  });
 
-$('.tables').dataTable();
+  window.addEventListener('resize', function () {
+    if (window.innerWidth >= 992) closeNavigation();
+  });
 
-/*=====  End of datatable  ======*/
+  if (window.jQuery) {
+    if ($.fn.dataTable) $('.tables').DataTable({retrieve: true, responsive: true});
 
-/*=============================================
- //iCheck for checkbox and radio inputs
-=============================================*/
+    if ($.fn.iCheck) {
+      $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+        checkboxClass: 'icheckbox_minimal-blue',
+        radioClass: 'iradio_minimal-blue'
+      });
+    }
 
-$('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
-  checkboxClass: 'icheckbox_minimal-blue',
-  radioClass   : 'iradio_minimal-blue'
-})
-
-
-
-/*=================================
-=            inputmask            =
-=================================*/
-
-//Datemask dd/mm/yyyy
-$('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
-//Datemask2 mm/dd/yyyy
-$('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
-//Money Euro
-$('[data-mask]').inputmask()
-
-
-/*=============================================
-FIXING HIDDEN BUTTONS IN THE BACKEND
-=============================================*/
-
-if(window.matchMedia("(max-width:767px)").matches){
-
-  $("body").removeClass('sidebar-collapse');
-
-}else{
-
-  $("body").addClass('sidebar-collapse');
-}
+    if ($.fn.inputmask) {
+      $('#datemask').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+      $('#datemask2').inputmask('mm/dd/yyyy', {'placeholder': 'mm/dd/yyyy'});
+      $('[data-mask]').inputmask();
+    }
+  }
+})();

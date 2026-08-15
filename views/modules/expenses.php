@@ -1,7 +1,7 @@
 <div class="content-wrapper">
 
   <section class="content-header">
-    <h1>Manage Expenses</h1>
+    <div><span class="pos-section-label">Business</span><h1>Expenses</h1><p class="pos-page-description">Record operating costs so daily net performance remains accurate.</p></div>
     <ol class="breadcrumb">
       <li><a href="home"><i class="fa fa-dashboard"></i> Home</a></li>
       <li class="active">Expenses</li>
@@ -13,7 +13,7 @@
     <div class="box">
 
       <div class="box-header with-border">
-        <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddExpense">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddExpense">
           Add Expense
         </button>
       </div>
@@ -54,7 +54,7 @@
                 <td>'.e($value["date"]).'</td>
                 <td>
                   <div class="btn-group">
-                    <button class="btn btn-warning btnEditExpense" idExpense="'.$value["id"].'" data-toggle="modal" data-target="#modalEditExpense"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-warning btnEditExpense" idExpense="'.$value["id"].'" data-bs-toggle="modal" data-bs-target="#modalEditExpense"><i class="fa fa-pencil"></i></button>
                     '.(current_user_role() === 'Administrator' ? '<button class="btn btn-danger btnDeleteExpense" idExpense="'.(int)$value["id"].'"><i class="fa fa-times"></i></button>' : '').'
                   </div>
                 </td>
@@ -81,7 +81,7 @@ MODAL ADD EXPENSE
       <form role="form" method="post">
 
         <div class="modal-header" style="background:#3c8dbc; color:white">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
           <h4 class="modal-title">Add Expense</h4>
         </div>
 
@@ -116,7 +116,7 @@ MODAL ADD EXPENSE
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default pull-left" data-bs-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-primary">Save Expense</button>
         </div>
 
@@ -141,7 +141,7 @@ MODAL EDIT EXPENSE
       <form role="form" method="post">
 
         <div class="modal-header" style="background:#3c8dbc; color:white">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
           <h4 class="modal-title">Edit Expense</h4>
         </div>
 
@@ -177,7 +177,7 @@ MODAL EDIT EXPENSE
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default pull-left" data-bs-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-primary">Save Changes</button>
         </div>
 

@@ -1,19 +1,15 @@
 
 <div class="content-wrapper">
-	<!-- Log on to codeastro.com for more projects! -->
+
   <section class="content-header">
 
-    <h1>
-
-      User Management
-
-    </h1>
+    <div><span class="pos-section-label">Administration</span><h1>Team access</h1><p class="pos-page-description">Create staff accounts, assign roles and control register access.</p></div>
 
     <ol class="breadcrumb">
 
       <li><a href="home"><i class="fa fa-dashboard"></i> Home</a></li>
 
-      <li class="active">Dashboard</li>
+      <li class="active">Team access</li>
 
     </ol>
 
@@ -25,7 +21,7 @@
 
       <div class="box-header with-border">
 
-        <button class="btn btn-success" data-toggle="modal" data-target="#addUser">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUser">
 
          <i class="fa fa-plus"></i> Add User
 
@@ -53,7 +49,7 @@
            </tr>
 
           </thead>
-			<!-- Log on to codeastro.com for more projects! -->
+
           <tbody>
 
             <?php
@@ -101,7 +97,7 @@
 
                       <div class="btn-group">
 
-                        <button class="btn btn-primary btnEditUser" idUser="'.$value["id"].'" data-toggle="modal" data-target="#editUser"><i class="fa fa-pencil"></i></button>
+                        <button class="btn btn-primary btnEditUser" idUser="'.$value["id"].'" data-bs-toggle="modal" data-bs-target="#editUser"><i class="fa fa-pencil"></i></button>
 
                         <button class="btn btn-danger btnDeleteUser" userId="'.(int)$value["id"].'"><i class="fa fa-trash"></i></button>
 
@@ -146,7 +142,7 @@
 
         <div class="modal-header" style="background: #DD4B39; color: #fff">
 
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 
           <h4 class="modal-title">Add User</h4>
 
@@ -242,7 +238,7 @@
 
         <div class="modal-footer">
 
-          <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger pull-left" data-bs-dismiss="modal">Close</button>
 
           <button type="submit" class="btn btn-success">Save</button>
 
@@ -282,7 +278,7 @@
 
         <div class="modal-header" style="background: #DD4B39; color: #fff">
 
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 
           <h4 class="modal-title">Edit User</h4>
 
@@ -378,7 +374,7 @@
 
         <div class="modal-footer">
 
-          <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger pull-left" data-bs-dismiss="modal">Close</button>
 
           <button type="submit" class="btn btn-success">Edit User</button>
 
@@ -394,7 +390,7 @@
     </div>
 
   </div>
-	<!-- Log on to codeastro.com for more projects! -->
+
 </div>
 
 <?php
