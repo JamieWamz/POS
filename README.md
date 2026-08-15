@@ -4,12 +4,14 @@ Golden Tap POS is a responsive, security-hardened point-of-sale application for 
 
 ## What is included
 
+- A distinctive Golden Tap “house ledger” interface, built on locally stored Bootstrap 5 assets for reliable desktop and mobile operation.
 - Fast product-catalog checkout with category filters, search, stock limits, customer selection, VAT, and cash-change calculation.
 - Server-authoritative pricing, VAT, totals, seller identity, and inventory changes. Checkout, edits, and reversals run in database transactions.
 - A print-ready 80 mm receipt after every successful sale, plus receipt reprints and XML invoice exports from Sales history.
 - Actual transaction snapshots on receipts: item price, quantity, line total, subtotal, VAT rate and value, total, payment/reference, cash tendered, and change due.
 - Administrator dashboard with live daily KPIs, recent sales, quick actions, low-stock alerts, team controls, and an activity audit log.
 - Product/category management, customer records, expense tracking, date-range reports, CSV exports, and sales performance charts.
+- Product-image matching from the entered brand and pack name, with a reviewed catalogue selection and validated local-upload fallback.
 - Role-based access for administrators, sellers, and inventory specialists.
 
 ## Roles
@@ -30,6 +32,7 @@ Golden Tap POS is a responsive, security-hardened point-of-sale application for 
 - PHP extensions: `pdo_mysql`, `mbstring`, `fileinfo`, `gd`, and `simplexml`
 - MySQL 8.0+ or MariaDB 10.6+
 - Apache 2.4 with `mod_rewrite` and `AllowOverride All`
+- Outbound HTTPS access and PHP `allow_url_fopen` for product-image catalogue search
 - HTTPS in production
 
 The app has no Composer or Node build step. Required browser libraries are stored locally under `views/`.
@@ -79,14 +82,15 @@ The app has no Composer or Node build step. Required browser libraries are store
 
 ## Upgrading an existing installation
 
-Back up the database first, deploy this code over the application, configure `.env`, and apply the one-time migration:
+Back up the database first, deploy this code over the application, configure `.env`, and apply the one-time migrations in order:
 
 ```bash
 mysqldump -u root -p posystem > posystem-before-modernization.sql
 mysql -u root -p posystem < database/001_modernization.sql
+mysql -u root -p posystem < database/002_product_image_urls.sql
 ```
 
-The migration converts monetary fields to exact decimals, stores the VAT rate and cash tender/change values, adds missing expenses and audit tables, creates indexes and constraints, and normalizes legacy date/password storage. It intentionally stops on duplicate product codes, duplicate usernames, duplicate categories, or orphaned records so those integrity issues can be corrected instead of silently discarded.
+The first migration converts monetary fields to exact decimals, stores the VAT rate and cash tender/change values, adds missing expenses and audit tables, creates indexes and constraints, and normalizes legacy date/password storage. It intentionally stops on duplicate product codes, duplicate usernames, duplicate categories, or orphaned records so those integrity issues can be corrected instead of silently discarded. The second migration expands the product-image field for catalogue CDN URLs.
 
 Legacy fixed-salt password hashes are accepted only during the first successful login and are immediately replaced with PHP's current password hash. New and changed passwords always require at least 12 characters.
 
@@ -100,6 +104,12 @@ The browser opens the print dialog immediately after a checkout commits successf
 - Business name, address, phone, TPIN, currency symbol, and VAT label come from `.env`.
 - The print stylesheet targets 80 mm receipt paper and also works with “Save as PDF.”
 
+## Product images
+
+When an administrator or inventory specialist enters a product or brand name, the product form searches [Open Food Facts](https://world.openfoodfacts.org/) and preselects the closest matching package image. The result must be reviewed before saving; another match can be selected, and a JPEG, PNG, or WebP upload always takes precedence. Catalogue URLs are restricted to the Open Food Facts image hosts and are never fetched by the application server after selection.
+
+Product search depends on the public Open Food Facts service and may occasionally be unavailable. Local upload remains fully functional in that case. Product imagery supplied by Open Food Facts is available under its stated [CC BY-SA terms](https://openfoodfacts.github.io/openfoodfacts-server/api/tutorials/license-be-on-the-legal-side/), and the application displays source attribution in the footer.
+
 ## Security and data integrity
 
 - PDO prepared statements and whitelisted query fields
@@ -110,7 +120,7 @@ The browser opens the print dialog immediately after a checkout commits successf
 - MIME/type/size validation for uploads and managed-path-only deletion
 - Output encoding and JSON encoding for HTML, charts, and embedded catalog data
 - CSV formula-injection protection
-- Security headers, a restrictive content security policy, and protected internal directories
+- Security headers, a restrictive content security policy limited to local assets and approved catalogue image hosts, and protected internal directories
 - Audit entries for authentication, sales, inventory, users, expenses, reports, and invoices
 - Referential constraints that preserve financial history
 
@@ -143,10 +153,10 @@ ajax/          Authenticated JSON endpoints
 config/        Environment-backed application configuration
 controllers/   Validation and application workflows
 core/          Bootstrap, session, CSRF, upload, and security helpers
-database/      Clean schema and legacy modernization migration
+database/      Clean schema and ordered upgrade migrations
 models/        Prepared database access
 scripts/       CLI administration utilities
-views/         Templates, modules, styles, scripts, and local browser assets
+views/         Bootstrap-based templates, modules, styles, scripts, and local browser assets
 index.php      Application entry point
 ```
 
