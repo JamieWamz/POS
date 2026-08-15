@@ -1,0 +1,13 @@
+Options All -Indexes
+
+<FilesMatch "(^\.|\.env|\.sql$|\.txt$|composer\.(json|lock)$|webServerApiSettings\.json$)">
+    Require all denied
+</FilesMatch>
+
+RewriteEngine On
+
+RewriteRule ^(?:config|core|controllers|models|database|scripts)/ - [F,L,NC]
+RewriteCond %{REQUEST_URI} !/views/modules/(?:download-(?:report|expenses-report|invoice-xml)|print-receipt)\.php$ [NC]
+RewriteRule ^views/modules/ - [F,L,NC]
+
+RewriteRule ^([-a-zA-Z0-9]+)$ index.php?route=$1 [L,QSA]
