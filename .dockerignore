@@ -1,0 +1,16 @@
+.git
+.env
+README.local.md
+*.log
+*.zip
+.idea
+.vscode
+DATABASE FILE
+extensions
+xml
+views/img/users/*
+!views/img/users/default
+!views/img/users/default/**
+views/img/products/*
+!views/img/products/default
+!views/img/products/default/**

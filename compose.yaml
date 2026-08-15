@@ -1,0 +1,64 @@
+name: golden-tap
+
+services:
+  db:
+    image: mariadb:11.8
+    container_name: golden-tap-db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_DATABASE:-posystem}
+      MARIADB_USER: ${DB_USERNAME:-pos_app}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Set DB_ROOT_PASSWORD in .env}
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/000-schema.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: golden-tap-web:local
+    container_name: golden-tap-web
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${APP_PORT:-8081}:80"
+    environment:
+      APP_NAME: ${APP_NAME:-Golden Tap POS}
+      APP_ENV: ${APP_ENV:-local}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_TIMEZONE: ${APP_TIMEZONE:-Africa/Lusaka}
+      SESSION_NAME: ${SESSION_NAME:-golden_tap_session}
+      BUSINESS_NAME: ${BUSINESS_NAME:-Golden Tap Pub}
+      BUSINESS_ADDRESS: ${BUSINESS_ADDRESS:-}
+      BUSINESS_PHONE: ${BUSINESS_PHONE:-}
+      BUSINESS_TAX_NUMBER: ${BUSINESS_TAX_NUMBER:-}
+      CURRENCY_SYMBOL: ${CURRENCY_SYMBOL:-K}
+      TAX_LABEL: ${TAX_LABEL:-VAT}
+      DEFAULT_VAT_RATE: ${DEFAULT_VAT_RATE:-16}
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-posystem}
+      DB_USERNAME: ${DB_USERNAME:-pos_app}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - .:/var/www/html
+      - product-images:/var/www/html/views/img/products
+      - user-images:/var/www/html/views/img/users
+
+volumes:
+  db-data:
+    name: golden-tap-db-data
+  product-images:
+    name: golden-tap-product-images
+  user-images:
+    name: golden-tap-user-images

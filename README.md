@@ -10,6 +10,7 @@ Golden Tap POS is a responsive, security-hardened point-of-sale application for 
 - A print-ready 80 mm receipt after every successful sale, plus receipt reprints and XML invoice exports from Sales history.
 - Actual transaction snapshots on receipts: item price, quantity, line total, subtotal, VAT rate and value, total, payment/reference, cash tendered, and change due.
 - Administrator dashboard with live daily KPIs, recent sales, quick actions, low-stock alerts, team controls, and an activity audit log.
+- Team administration with secure JPEG, PNG or WebP profile-photo upload, preview, replacement and removal.
 - Product/category management, customer records, expense tracking, date-range reports, CSV exports, and sales performance charts.
 - Product-image matching from the entered brand and pack name, with a reviewed catalogue selection and validated local-upload fallback.
 - Role-based access for administrators, sellers, and inventory specialists.
@@ -36,6 +37,55 @@ Golden Tap POS is a responsive, security-hardened point-of-sale application for 
 - HTTPS in production
 
 The app has no Composer or Node build step. Required browser libraries are stored locally under `views/`.
+
+## Run locally with Docker
+
+Docker Compose is the recommended local setup because it installs the required PHP extensions, initializes MariaDB on first use, preserves uploaded images and avoids changing the host PHP installation.
+
+1. From the repository root, create the local environment file:
+
+   ```bash
+   cp .env.example .env
+   chmod 600 .env
+   ```
+
+2. Open `.env` and replace both placeholder database passwords. Also review the business name, address, phone, VAT rate and currency. Never commit `.env`.
+
+3. Build the web image and start the complete application:
+
+   ```bash
+   docker compose up -d --build
+   ```
+
+4. Check that both services are ready:
+
+   ```bash
+   docker compose ps
+   docker compose logs --tail=50 web
+   ```
+
+5. For a new database only, create the first administrator and enter a password of at least 12 characters when prompted:
+
+   ```bash
+   docker compose exec web php scripts/create-admin.php --username=admin --name="Store Administrator"
+   ```
+
+6. Open [http://127.0.0.1:8081](http://127.0.0.1:8081). If `APP_PORT` was changed in `.env`, use that port instead.
+
+For later starts, no rebuild is needed:
+
+```bash
+docker compose up -d
+```
+
+To watch application logs or stop the services:
+
+```bash
+docker compose logs -f web
+docker compose stop
+```
+
+`docker compose down` removes the containers and network but preserves the named database and image volumes. Do not run `docker compose down -v` unless all local database records and uploaded images may be permanently deleted.
 
 ## New installation
 
