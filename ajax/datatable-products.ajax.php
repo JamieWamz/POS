@@ -16,7 +16,7 @@ foreach ($products ?: [] as $index => $product) {
     $stock = (int) $product['stock'];
     $stockClass = $stock <= 10 ? 'danger' : ($stock <= 15 ? 'warning' : 'success');
     $image = '<img src="' . e($product['image']) . '" alt="" width="44" height="44" class="pos-table-thumb">';
-    $buttons = '<div class="btn-group"><button type="button" class="btn btn-primary btnEditProduct" idProduct="' . (int) $product['id'] . '" data-toggle="modal" data-target="#modalEditProduct" aria-label="Edit product"><i class="fa fa-pencil"></i></button>';
+    $buttons = '<div class="btn-group"><button type="button" class="btn btn-primary btnEditProduct" idProduct="' . (int) $product['id'] . '" data-bs-toggle="modal" data-bs-target="#modalEditProduct" aria-label="Edit product"><i class="fa fa-pencil"></i></button>';
     if (current_user_role() === 'Administrator') {
         $buttons .= '<button type="button" class="btn btn-danger btnDeleteProduct" idProduct="' . (int) $product['id'] . '" aria-label="Delete product"><i class="fa fa-trash"></i></button>';
     }
@@ -28,7 +28,7 @@ foreach ($products ?: [] as $index => $product) {
         e($product['code']),
         e($product['description']),
         e($category['Category'] ?? ''),
-        '<span class="label label-' . $stockClass . '">' . $stock . '</span>',
+        '<span class="badge text-bg-' . $stockClass . '">' . $stock . '</span>',
         'K ' . number_format((float) $product['buyingPrice'], 2),
         'K ' . number_format((float) $product['sellingPrice'], 2),
         e($product['date']),

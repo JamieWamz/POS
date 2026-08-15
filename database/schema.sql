@@ -55,7 +55,7 @@ CREATE TABLE products (
   idCategory INT UNSIGNED NOT NULL,
   code VARCHAR(40) NOT NULL,
   description VARCHAR(160) NOT NULL,
-  image VARCHAR(255) NOT NULL DEFAULT 'views/img/products/default/anonymous.png',
+  image VARCHAR(2048) NOT NULL DEFAULT 'views/img/products/default/anonymous.png',
   stock INT UNSIGNED NOT NULL DEFAULT 0,
   buyingPrice DECIMAL(12,2) UNSIGNED NOT NULL DEFAULT 0.00,
   sellingPrice DECIMAL(12,2) UNSIGNED NOT NULL,

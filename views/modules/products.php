@@ -1,494 +1,163 @@
 <?php
-
-if($_SESSION["profile"] == "Seller"){
-
-  echo '<script>
-
-    window.location = "home";
-
-  </script>';
-
-  return;
-
+if ($_SESSION['profile'] === 'Seller') {
+    echo '<script>window.location = "home";</script>';
+    return;
 }
-
+$productCategories = ControllerCategories::ctrShowCategories(null, null) ?: [];
 ?>
 <div class="content-wrapper">
-
   <section class="content-header">
-
-    <h1>
-
-      Product Management
-
-    </h1>
-
-    <ol class="breadcrumb">
-		<!-- Log on to codeastro.com for more projects! -->
-      <li><a href="home"><i class="fa fa-dashboard"></i> Home</a></li>
-
-      <li class="active">Dashboard</li>
-
-    </ol>
-
+    <div>
+      <span class="pos-section-label">Catalogue</span>
+      <h1>Products</h1>
+      <p class="pos-page-description">Set the selling price, purchasing cost, available stock and exact product image.</p>
+    </div>
+    <ol class="breadcrumb"><li><a href="home"><i class="fa fa-dashboard"></i> Home</a></li><li class="active">Products</li></ol>
   </section>
 
   <section class="content">
-
     <div class="box">
-
-      <div class="box-header with-border">
-
-        <button class="btn btn-success" data-toggle="modal" data-target="#addProduct"> <i class="fa fa-plus"></i> Add Product</button>
-
+      <div class="box-header">
+        <div><span class="pos-eyebrow">Inventory</span><h2 class="box-title">Product list</h2></div>
+        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addProduct"><i class="fa fa-plus" aria-hidden="true"></i> Add product</button>
       </div>
-
       <div class="box-body">
-
         <table class="table table-bordered table-hover table-striped dt-responsive productsTable" width="100%">
-
-          <thead>
-			<!-- Log on to codeastro.com for more projects! -->
-           <tr>
-
-             <th style="width:10px">#</th>
-             <th>Image</th>
-             <th>Code</th>
-             <th>Description</th>
-             <th>Category</th>
-             <th>Stock</th>
-             <th>Buying Price</th>
-             <th>Selling Price</th>
-             <th>Date added</th>
-             <th>Actions</th>
-
-           </tr>
-
-          </thead>
-
+          <thead><tr><th>#</th><th>Image</th><th>Code</th><th>Product</th><th>Category</th><th>Stock</th><th>Buying price</th><th>Selling price</th><th>Date added</th><th>Actions</th></tr></thead>
         </table>
-
         <input type="hidden" value="<?php echo e($_SESSION['profile']); ?>" id="hiddenProfile">
-
       </div>
-
     </div>
-
   </section>
-
 </div>
 
-<!--=====================================
-=            module add Product            =
-======================================-->
-
-<!-- Modal -->
-<div id="addProduct" class="modal fade" role="dialog">
-	<!-- Log on to codeastro.com for more projects! -->
-  <div class="modal-dialog">
-
+<div id="addProduct" class="modal fade" tabindex="-1" aria-labelledby="addProductTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
-
-      <form role="form" method="POST" action="products" enctype="multipart/form-data">
-
-        <!--=====================================
-        HEADER
-        ======================================-->
-
-        <div class="modal-header" style="background: #DD4B39; color: #fff">
-
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-
-          <h4 class="modal-title">Add Product</h4>
-
+      <form method="post" action="products" enctype="multipart/form-data">
+        <div class="modal-header">
+          <h2 class="modal-title" id="addProductTitle">Add product</h2>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-
-        <!--=====================================
-        BODY
-        ======================================-->
-
         <div class="modal-body">
-
-          <div class="box-body">
-
-            <!-- input category -->
-            <div class="form-group">
-
-              <div class="input-group">
-
-                <span class="input-group-addon"><i class="fa fa-th"></i></span>
-
-                <select class="form-control input-lg" id="newCategory" name="newCategory">
-
-                  <option value="">Select Category</option>
-
-                   <?php
-
-                    $item = null;
-                    $value1 = null;
-
-                    $categories = controllerCategories::ctrShowCategories($item, $value1);
-
-                    foreach ($categories as $key => $value) {
-
-                      echo '<option value="'.(int) $value["id"].'">'.e($value["Category"]).'</option>';
-                    }
-
-                  ?>
-
-                </select>
-
-              </div>
-
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="newCategory">Category</label>
+              <select class="form-select" id="newCategory" name="newCategory" required>
+                <option value="">Select a category</option>
+                <?php foreach ($productCategories as $category): ?>
+                  <option value="<?php echo (int) $category['id']; ?>"><?php echo e($category['Category']); ?></option>
+                <?php endforeach; ?>
+              </select>
             </div>
-
-            <!--Input Code -->
-            <div class="form-group">
-
-              <div class="input-group">
-
-                <span class="input-group-addon"><i class="fa fa-code"></i></span>
-
-                <input class="form-control input-lg" type="text" id="newCode" name="newCode" placeholder="Add Product Code" required>
-
-              </div>
-
+            <div class="col-md-6">
+              <label class="form-label" for="newCode">Product code</label>
+              <input class="form-control" type="text" id="newCode" name="newCode" maxlength="40" placeholder="e.g. HEINEKEN330" required>
             </div>
-
-            <!-- input description -->
-            <div class="form-group">
-
-              <div class="input-group">
-
-                <span class="input-group-addon"><i class="fa fa-product-hunt"></i></span>
-
-                <input class="form-control input-lg" type="text" id="newDescription" name="newDescription" placeholder="Add Description/Product Name" required>
-
-              </div>
-
+            <div class="col-12">
+              <label class="form-label" for="newDescription">Product name</label>
+              <input class="form-control" type="text" id="newDescription" name="newDescription" maxlength="160" placeholder="Use the exact brand and pack size" required>
             </div>
-
-             <!-- input Stock -->
-            <div class="form-group">
-
-              <div class="input-group">
-
-                <span class="input-group-addon"><i class="fa fa-check"></i></span>
-
-                <input class="form-control input-lg" type="number" id="newStock" name="newStock" placeholder="Add Stock" min="0" required>
-
-              </div>
-
+            <div class="col-md-4">
+              <label class="form-label" for="newStock">Opening stock</label>
+              <input class="form-control" type="number" id="newStock" name="newStock" min="0" step="1" required>
             </div>
-
-            <!-- INPUT BUYING PRICE -->
-            <div class="form-group row">
-
-              <div class="col-xs-12 col-sm-6">
-
-                <div class="input-group">
-
-                  <span class="input-group-addon"><i class="fa fa-arrow-up"></i></span>
-
-                  <input type="number" class="form-control input-lg" id="newBuyingPrice" name="newBuyingPrice" step="any" min="0" placeholder="Buying Price" required>
-
-                </div>
-
-              </div>
-			  <!-- Log on to codeastro.com for more projects! -->
-
-              <!-- INPUT SELLING PRICE -->
-              <div class="col-xs-12 col-sm-6">
-
-                <div class="input-group">
-
-                  <span class="input-group-addon"><i class="fa fa-arrow-down"></i></span>
-
-                  <input type="number" class="form-control input-lg" id="newSellingPrice" name="newSellingPrice" step="any" min="0" placeholder="Selling Price" required>
-
-                </div>
-
-                <br>
-
-                <!-- CHECKBOX PERCENTAGE -->
-                <div class="col-xs-6">
-
-                  <div class="form-group">
-
-                    <label>
-
-                      <input type="checkbox" class="minimal percentage" checked>
-
-                      Use Percentage
-
-                    </label>
-
-                  </div>
-
-                </div>
-
-                <!-- INPUT PERCENTAGE -->
-                <div class="col-xs-6" style="padding:0">
-
-                  <div class="input-group">
-
-                    <input type="number" class="form-control input-lg newPercentage" min="0" value="40" required>
-
-                    <span class="input-group-addon"><i class="fa fa-percent"></i></span>
-
-                  </div>
-
-                </div>
-
-              </div>
-
+            <div class="col-md-4">
+              <label class="form-label" for="newBuyingPrice">Buying price</label>
+              <div class="input-group"><span class="input-group-text">K</span><input type="number" class="form-control" id="newBuyingPrice" name="newBuyingPrice" step="0.01" min="0" required></div>
             </div>
-
-            <!-- input image -->
-            <div class="form-group">
-
-              <div class="panel">Upload image</div>
-
-              <input id="newProdPhoto" type="file" class="newImage" name="newProdPhoto">
-
-              <p class="help-block">Maximum size 2Mb</p>
-
-              <img src="views/img/products/default/anonymous.png" class="img-thumbnail preview" alt="" width="100px">
-
+            <div class="col-md-4">
+              <label class="form-label" for="newSellingPrice">Selling price</label>
+              <div class="input-group"><span class="input-group-text">K</span><input type="number" class="form-control" id="newSellingPrice" name="newSellingPrice" step="0.01" min="0.01" required></div>
             </div>
-
+            <div class="col-12"><hr class="my-1"></div>
+            <div class="col-md-8 pos-product-image-control">
+              <label class="form-label" for="newProdPhoto">Product image</label>
+              <input id="newProdPhoto" type="file" class="form-control newImage" name="newProdPhoto" accept="image/jpeg,image/png,image/webp">
+              <div class="pos-image-choice"><span>or find the branded pack</span></div>
+              <button class="btn btn-default findProductImages" type="button" data-name-target="newDescription" data-url-target="newImageUrl" data-preview-target="newImagePreview" data-results-target="newImageResults"><i class="fa fa-search" aria-hidden="true"></i> Search product catalogue</button>
+              <input id="newImageUrl" type="hidden" name="newImageUrl">
+              <p class="help-block">The closest catalogue match is selected automatically. Check the brand and pack size before saving; an uploaded file takes precedence.</p>
+              <div id="newImageResults" class="pos-image-results" aria-live="polite"></div>
+            </div>
+            <div class="col-md-4 pos-product-preview">
+              <span class="form-label">Preview</span>
+              <img id="newImagePreview" src="views/img/products/default/anonymous.png" class="img-thumbnail" alt="Product image preview">
+            </div>
           </div>
-
         </div>
-
-        <!--=====================================
-        FOOTER
-        ======================================-->
-
         <div class="modal-footer">
-
-          <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
-
-          <button type="submit" class="btn btn-success">Save Product</button>
-
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save product</button>
         </div>
-
       </form>
-	  <!-- Log on to codeastro.com for more projects! -->
-
-
+      <?php (new ControllerProducts())->ctrCreateProducts(); ?>
     </div>
-
   </div>
-
 </div>
 
-<!--====  End of module add Product  ====-->
-
-<?php
-  $createProduct = new ControllerProducts();
-  $createProduct->ctrCreateProducts();
-?>
-
-<!--=====================================
-EDIT PRODUCT
-======================================-->
-
-<div id="modalEditProduct" class="modal fade" role="dialog">
-
-  <div class="modal-dialog">
-
+<div id="modalEditProduct" class="modal fade" tabindex="-1" aria-labelledby="editProductTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
-
-      <form role="form" method="POST" action="products" enctype="multipart/form-data">
-
-        <!--=====================================
-        HEADER
-        ======================================-->
-
-        <div class="modal-header" style="background:#DD4B39; color:white">
-
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-
-          <h4 class="modal-title">Edit product</h4>
-
+      <form method="post" action="products" enctype="multipart/form-data">
+        <div class="modal-header">
+          <h2 class="modal-title" id="editProductTitle">Edit product</h2>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-
-        <!--=====================================
-         BODY
-        ======================================-->
-		<!-- Log on to codeastro.com for more projects! -->
         <div class="modal-body">
-
-          <div class="box-body">
-
-            <!-- Select Category -->
-            <div class="form-group">
-
-              <div class="input-group">
-
-                <span class="input-group-addon"><i class="fa fa-th"></i></span>
-
-                <select class="form-control input-lg" name="editCategory" readonly required>
-
-                  <option id="editCategory"></option>
-
-                </select>
-
-              </div>
-
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="editCategory">Category</label>
+              <select class="form-select" id="editCategory" name="editCategory" required>
+                <?php foreach ($productCategories as $category): ?>
+                  <option value="<?php echo (int) $category['id']; ?>"><?php echo e($category['Category']); ?></option>
+                <?php endforeach; ?>
+              </select>
             </div>
-
-            <!-- INPUT FOR THE CODE -->
-            <div class="form-group">
-
-              <div class="input-group">
-
-                <span class="input-group-addon"><i class="fa fa-code"></i></span>
-
-                <input type="text" class="form-control input-lg" id="editCode" name="editCode" readonly required>
-
-              </div>
-
+            <div class="col-md-6">
+              <label class="form-label" for="editCode">Product code</label>
+              <input type="text" class="form-control" id="editCode" name="editCode" readonly required>
             </div>
-
-            <!-- INPUT FOR THE DESCRIPTION -->
-             <div class="form-group">
-
-              <div class="input-group">
-
-                <span class="input-group-addon"><i class="fa fa-product-hunt"></i></span>
-
-                <input type="text" class="form-control input-lg" id="editDescription" name="editDescription" required>
-
-              </div>
-
+            <div class="col-12">
+              <label class="form-label" for="editDescription">Product name</label>
+              <input type="text" class="form-control" id="editDescription" name="editDescription" maxlength="160" required>
             </div>
-
-             <!-- INPUT FOR THE STOCK -->
-             <div class="form-group">
-
-              <div class="input-group">
-
-                <span class="input-group-addon"><i class="fa fa-check"></i></span>
-
-                <input type="number" class="form-control input-lg" id="editStock" name="editStock" min="0" required>
-
-              </div>
-
+            <div class="col-md-4">
+              <label class="form-label" for="editStock">Available stock</label>
+              <input type="number" class="form-control" id="editStock" name="editStock" min="0" step="1" required>
             </div>
-
-             <!-- INPUT FOR BUYING PRICE -->
-             <div class="form-group row">
-
-                <div class="col-xs-12 col-sm-6">
-
-                  <div class="input-group">
-
-                    <span class="input-group-addon"><i class="fa fa-arrow-up"></i></span>
-
-                    <input type="number" class="form-control input-lg" id="editBuyingPrice" name="editBuyingPrice" step="any" min="0" required>
-
-                  </div>
-
-                </div><!-- Log on to codeastro.com for more projects! -->
-
-                <!-- INPUT FOR SELLING PRICE -->
-                <div class="col-xs-12 col-sm-6">
-
-                  <div class="input-group">
-
-                    <span class="input-group-addon"><i class="fa fa-arrow-down"></i></span>
-
-                    <input type="number" class="form-control input-lg" id="editSellingPrice" name="editSellingPrice" step="any" min="0" readonly required>
-
-                  </div>
-
-                  <br>
-
-                  <!-- PERCENTAGE CHECKBOX -->
-                  <div class="col-xs-6">
-
-                    <div class="form-group">
-
-                      <label>
-
-                        <input type="checkbox" class="minimal percentage" checked>
-
-                        Use Percentage
-
-                      </label>
-
-                    </div>
-
-                  </div>
-
-                  <!-- INPUT FOR PORCENTAJE -->
-                  <div class="col-xs-6" style="padding:0">
-
-                    <div class="input-group">
-
-                      <input type="number" class="form-control input-lg newPercentage" min="0" value="40" required>
-
-                      <span class="input-group-addon"><i class="fa fa-percent"></i></span>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
+            <div class="col-md-4">
+              <label class="form-label" for="editBuyingPrice">Buying price</label>
+              <div class="input-group"><span class="input-group-text">K</span><input type="number" class="form-control" id="editBuyingPrice" name="editBuyingPrice" step="0.01" min="0" required></div>
             </div>
-
-            <!-- INPUT TO UPLOAD IMAGE -->
-             <div class="form-group">
-
-              <div class="panel">Upload Image</div>
-
-              <input type="file" class="newImage" name="editImage">
-
-              <p class="help-block">2MB max</p>
-
-              <img src="views/img/products/default/anonymous.png" class="img-thumbnail preview" width="100px">
-
-              <input type="hidden" name="currentImage" id="currentImage">
-
+            <div class="col-md-4">
+              <label class="form-label" for="editSellingPrice">Selling price</label>
+              <div class="input-group"><span class="input-group-text">K</span><input type="number" class="form-control" id="editSellingPrice" name="editSellingPrice" step="0.01" min="0.01" required></div>
             </div>
-
+            <div class="col-12"><hr class="my-1"></div>
+            <div class="col-md-8 pos-product-image-control">
+              <label class="form-label" for="editImage">Replace with uploaded image</label>
+              <input id="editImage" type="file" class="form-control newImage" name="editImage" accept="image/jpeg,image/png,image/webp">
+              <div class="pos-image-choice"><span>or find the branded pack</span></div>
+              <button class="btn btn-default findProductImages" type="button" data-name-target="editDescription" data-url-target="editImageUrl" data-preview-target="editImagePreview" data-results-target="editImageResults"><i class="fa fa-search" aria-hidden="true"></i> Search product catalogue</button>
+              <input id="editImageUrl" type="hidden" name="editImageUrl">
+              <p class="help-block">The closest catalogue match is selected automatically. Leave the image controls untouched to keep the current image.</p>
+              <div id="editImageResults" class="pos-image-results" aria-live="polite"></div>
+            </div>
+            <div class="col-md-4 pos-product-preview">
+              <span class="form-label">Current image</span>
+              <img id="editImagePreview" src="views/img/products/default/anonymous.png" class="img-thumbnail" alt="Product image preview">
+            </div>
           </div>
-
         </div>
-
-        <!--=====================================
-        FOOTER
-        ======================================-->
-
         <div class="modal-footer">
-
-          <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
-
-          <button type="submit" class="btn btn-success">Save Changes</button>
-
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
         </div>
-
       </form>
-
-        <?php
-
-          $editProduct = new controllerProducts();
-          $editProduct -> ctrEditProduct();
-
-        ?>
-
+      <?php (new ControllerProducts())->ctrEditProduct(); ?>
     </div>
-
   </div>
+</div>
 
-</div><!-- Log on to codeastro.com for more projects! -->
-
-<?php
-
-	  $deleteProduct = new controllerProducts();
-  $deleteProduct -> ctrDeleteProduct();
-
-?>
+<?php (new ControllerProducts())->ctrDeleteProduct(); ?>

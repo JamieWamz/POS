@@ -1,271 +1,182 @@
-/*=============================================
-LOAD DYNAMIC PRODUCTS TABLE
-=============================================*/
+(function () {
+  'use strict';
 
-// $.ajax({
+  var defaultImage = 'views/img/products/default/anonymous.png';
+  var hiddenProfile = $('#hiddenProfile').val();
 
-// 	url: "ajax/datatable-products.ajax.php",
-// 	success:function(answer){
+  $('.productsTable').DataTable({
+    ajax: 'ajax/datatable-products.ajax.php?hiddenProfile=' + encodeURIComponent(hiddenProfile || ''),
+    deferRender: true,
+    retrieve: true,
+    processing: true,
+    responsive: true
+  });
 
-// 		console.log("answer", answer);
+  $('#newCategory').on('change', function () {
+    var categoryId = $(this).val();
+    if (!categoryId) return;
+    $.ajax({
+      url: 'ajax/products.ajax.php',
+      method: 'POST',
+      data: {idCategory: categoryId},
+      dataType: 'json'
+    }).done(function (answer) {
+      var suggested = answer && answer.length ? Number(answer[0].code) + 1 : String(categoryId) + '01';
+      $('#newCode').val(Number.isFinite(suggested) ? suggested : String(categoryId) + '01');
+    });
+  });
 
-// 	}
-
-// })
-
-var hiddenProfile = $('#hiddenProfile').val();
-
-$('.productsTable').DataTable({
-  "ajax": "ajax/datatable-products.ajax.php?hiddenProfile="+hiddenProfile,
-  "deferRender": true,
-  "retrieve": true,
-  "processing": true
-});
-
-/* LOG ON TO codeastro.com FOR MORE PROJECTS */
-/*=============================================
-GETTING CATEGORY TO ASSIGN A CODE
-=============================================*/
- $("#newCategory").change(function(){
-
-   var idCategory = $(this).val();
-
-   var datum = new FormData();
-     datum.append("idCategory", idCategory);
-
-     $.ajax({
-
-       url:"ajax/products.ajax.php",
-       method: "POST",
-       data: datum,
-       cache: false,
-       contentType: false,
-       processData: false,
-       dataType:"json",
-       success:function(answer){
-
-       console.log("answer", answer);
-
-         if(!answer){
-
-           var newCode = idCategory+"01";
-           $("#newCode").val(newCode);
-
-         }else{
-
-           var newCode = Number(answer["code"]) + 1;
-           $("#newCode").val(newCode);
-
-         }
-
-       }
-
-     })
-
- })
-
-/* LOG ON TO codeastro.com FOR MORE PROJECTS */
-/*=============================================
-ADDING SELLING PRICE
-=============================================*/
-$("#newBuyingPrice, #editBuyingPrice").change(function(){
-
-  if($(".percentage").prop("checked")){
-
-    var valuePercentage = $(".newPercentage").val();
-
-    var percentage = Number(($("#newBuyingPrice").val()*valuePercentage/100))+Number($("#newBuyingPrice").val());
-
-    var editPercentage = Number(($("#editBuyingPrice").val()*valuePercentage/100))+Number($("#editBuyingPrice").val());
-
-    $("#newSellingPrice").val(percentage);
-    $("#newSellingPrice").prop("readonly",true);
-
-    $("#editSellingPrice").val(editPercentage);
-    $("#editSellingPrice").prop("readonly",true);
-
+  function showImageError(message) {
+    swal({title: 'Image not accepted', text: message, type: 'error', confirmButtonText: 'Close'});
   }
 
-})
-/* LOG ON TO codeastro.com FOR MORE PROJECTS */
-/*=============================================
-PERCENTAGE CHANGE
-=============================================*/
-$(".newPercentage").change(function(){
-
-  if($(".percentage").prop("checked")){
-
-    var valuePercentage = $(this).val();
-
-    var percentage = Number(($("#newBuyingPrice").val()*valuePercentage/100))+Number($("#newBuyingPrice").val());
-
-    var editPercentage = Number(($("#editBuyingPrice").val()*valuePercentage/100))+Number($("#editBuyingPrice").val());
-
-    $("#newSellingPrice").val(percentage);
-    $("#newSellingPrice").prop("readonly",true);
-
-    $("#editSellingPrice").val(editPercentage);
-    $("#editSellingPrice").prop("readonly",true);
-
-  }
-
-})
-
-$(".percentage").on("ifUnchecked",function(){
-
-  $("#newSellingPrice").prop("readonly",false);
-  $("#editSellingPrice").prop("readonly",false);
-
-})
-
-$(".percentage").on("ifChecked",function(){
-
-  $("#newSellingPrice").prop("readonly",true);
-  $("#editSellingPrice").prop("readonly",true);
-
-})
-/* LOG ON TO codeastro.com FOR MORE PROJECTS */
-/*=============================================
-UPLOADING PRODUCT IMAGE
-=============================================*/
-
-$(".newImage").change(function(){
-
-  var image = this.files[0];
-
-  /*=============================================
-    WE VALIDATE THAT THE FORMAT IS JPG OR PNG
-    =============================================*/
-
-    if(image["type"] != "image/jpeg" && image["type"] != "image/png"){
-
-      $(".newImage").val("");
-
-       swal({
-          title: "Error uploading image",
-          text: "¡The image should be in JPG o PNG format!",
-          type: "error",
-          confirmButtonText: "¡Close!"
-        });
-
-    }else if(image["size"] > 2000000){
-
-      $(".newImage").val("");
-
-       swal({
-          title: "Error uploading image",
-          text: "¡The image shouldn't be more than 2MB!",
-          type: "error",
-          confirmButtonText: "¡Close!"
-        });
-
-    }else{
-
-      var imageData = new FileReader;
-      imageData.readAsDataURL(image);
-
-      $(imageData).on("load", function(event){
-
-        var imagePath = event.target.result;
-
-        $(".preview").attr("src", imagePath);
-
-      })
-
+  $('.newImage').on('change', function () {
+    var input = this;
+    var image = input.files && input.files[0];
+    if (!image) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(image.type)) {
+      input.value = '';
+      showImageError('Use a JPEG, PNG or WebP image.');
+      return;
     }
-})
-/* LOG ON TO codeastro.com FOR MORE PROJECTS */
-/*=============================================
-EDIT PRODUCT
-=============================================*/
+    if (image.size > 5 * 1024 * 1024) {
+      input.value = '';
+      showImageError('Images must be 5 MB or smaller.');
+      return;
+    }
 
-$(".productsTable tbody").on("click", "button.btnEditProduct", function(){
+    var form = input.closest('form');
+    var hiddenUrl = form.querySelector('input[name$="ImageUrl"]');
+    var preview = form.querySelector('.pos-product-preview img');
+    if (hiddenUrl) hiddenUrl.value = '';
+    form.querySelectorAll('.pos-image-result').forEach(function (result) { result.classList.remove('selected'); });
 
-  var idProduct = $(this).attr("idProduct");
+    var reader = new FileReader();
+    reader.addEventListener('load', function (event) {
+      if (preview) preview.src = event.target.result;
+    });
+    reader.readAsDataURL(image);
+  });
 
-  var datum = new FormData();
-    datum.append("idProduct", idProduct);
+  function resultLabel(result) {
+    return [result.brand, result.name, result.quantity].filter(Boolean).join(' · ');
+  }
 
-     $.ajax({
+  function selectSearchResult(button, result, hiddenUrl, preview, resultsContainer) {
+    resultsContainer.querySelectorAll('.pos-image-result').forEach(function (item) { item.classList.remove('selected'); });
+    button.classList.add('selected');
+    hiddenUrl.value = result.image;
+    preview.src = result.image;
+    var form = hiddenUrl.closest('form');
+    var upload = form ? form.querySelector('.newImage') : null;
+    if (upload) upload.value = '';
+  }
 
-      url:"ajax/products.ajax.php",
-      method: "POST",
-      data: datum,
-      cache: false,
-      contentType: false,
-      processData: false,
-      dataType:"json",
-      success:function(answer){
+  $('.findProductImages').on('click', function () {
+    var button = this;
+    var nameInput = document.getElementById(button.dataset.nameTarget);
+    var hiddenUrl = document.getElementById(button.dataset.urlTarget);
+    var preview = document.getElementById(button.dataset.previewTarget);
+    var resultsContainer = document.getElementById(button.dataset.resultsTarget);
+    var query = String(nameInput ? nameInput.value : '').trim();
 
-        // console.log("answer", answer);
+    if (query.length < 2) {
+      showImageError('Enter the product brand and pack size first.');
+      if (nameInput) nameInput.focus();
+      return;
+    }
 
-        var categoryData = new FormData();
-        categoryData.append("idCategory",answer["idCategory"]);
+    button.disabled = true;
+    button.innerHTML = '<i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"></i> Searching catalogue…';
+    resultsContainer.innerHTML = '<p class="pos-image-status">Looking for “' + $('<div>').text(query).html() + '”…</p>';
 
-         $.ajax({
-
-            url:"ajax/categories.ajax.php",
-            method: "POST",
-            data: categoryData,
-            cache: false,
-            contentType: false,
-            processData: false,
-            dataType:"json",
-            success:function(answer){
-
-                $("#editCategory").val(answer["id"]);
-                $("#editCategory").html(answer["Category"]);
-
-            }
-
-        })
-
-         $("#editCode").val(answer["code"]);
-
-         $("#editDescription").val(answer["description"]);
-
-         $("#editStock").val(answer["stock"]);
-
-         $("#editBuyingPrice").val(answer["buyingPrice"]);
-
-         $("#editSellingPrice").val(answer["sellingPrice"]);
-
-         if(answer["image"] != ""){
-
-             $("#currentImage").val(answer["image"]);
-
-             $(".preview").attr("src",  answer["image"]);
-
-         }
-
+    $.ajax({
+      url: 'ajax/product-images.ajax.php',
+      method: 'POST',
+      data: {query: query},
+      dataType: 'json'
+    }).done(function (payload) {
+      resultsContainer.innerHTML = '';
+      var results = payload && Array.isArray(payload.results) ? payload.results : [];
+      if (!results.length) {
+        resultsContainer.innerHTML = '<p class="pos-image-status">No catalogue image matched. Upload a clear product photo instead.</p>';
+        return;
       }
 
-  })
+      var heading = document.createElement('p');
+      heading.className = 'pos-image-status';
+      heading.textContent = 'Best match selected. Choose another result if the packaging differs.';
+      resultsContainer.appendChild(heading);
 
-})
-/* LOG ON TO codeastro.com FOR MORE PROJECTS */
-/*=============================================
-DELETE PRODUCT
-=============================================*/
+      var grid = document.createElement('div');
+      grid.className = 'pos-image-results__grid';
+      results.forEach(function (result, index) {
+        var resultButton = document.createElement('button');
+        resultButton.type = 'button';
+        resultButton.className = 'pos-image-result';
+        resultButton.title = resultLabel(result);
 
-$(".productsTable tbody").on("click", "button.btnDeleteProduct", function(){
+        var image = document.createElement('img');
+        image.src = result.image;
+        image.alt = '';
+        image.loading = 'lazy';
+        resultButton.appendChild(image);
 
-  var idProduct = $(this).attr("idProduct");
-  swal({
+        var label = document.createElement('span');
+        label.textContent = result.brand || result.name;
+        resultButton.appendChild(label);
 
-    title: '¿Are you sure you want to delete the product?',
-    text: "¡If you're not sure you can cancel this action!",
-    type: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    cancelButtonText: 'Cancel',
-    confirmButtonText: 'Yes, delete product!'
-    }).then(function(result){
-      if (result.value) {
+        resultButton.addEventListener('click', function () {
+          selectSearchResult(resultButton, result, hiddenUrl, preview, resultsContainer);
+        });
+        grid.appendChild(resultButton);
 
-          submitSecurePost("products", {deleteProductId: idProduct});
+        if (index === 0) {
+          selectSearchResult(resultButton, result, hiddenUrl, preview, resultsContainer);
+        }
+      });
+      resultsContainer.appendChild(grid);
+    }).fail(function (xhr) {
+      var message = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'The catalogue search could not be completed. Upload a product photo or try again.';
+      resultsContainer.innerHTML = '';
+      showImageError(message);
+    }).always(function () {
+      button.disabled = false;
+      button.innerHTML = '<i class="fa fa-search" aria-hidden="true"></i> Search product catalogue';
+    });
+  });
 
-      }
-    })
-})
+  $('.productsTable tbody').on('click', 'button.btnEditProduct', function () {
+    $.ajax({
+      url: 'ajax/products.ajax.php',
+      method: 'POST',
+      data: {idProduct: $(this).attr('idProduct')},
+      dataType: 'json'
+    }).done(function (answer) {
+      $('#editCategory').val(answer.idCategory);
+      $('#editCode').val(answer.code);
+      $('#editDescription').val(answer.description);
+      $('#editStock').val(answer.stock);
+      $('#editBuyingPrice').val(answer.buyingPrice);
+      $('#editSellingPrice').val(answer.sellingPrice);
+      $('#editImagePreview').attr('src', answer.image || defaultImage);
+      $('#editImageUrl').val(/^https:\/\//i.test(answer.image || '') ? answer.image : '');
+      $('#editImageResults').empty();
+      $('#editImage').val('');
+    });
+  });
+
+  $('.productsTable tbody').on('click', 'button.btnDeleteProduct', function () {
+    var productId = $(this).attr('idProduct');
+    swal({
+      title: 'Delete this product?',
+      text: 'Products linked to completed sales may be retained for financial history.',
+      type: 'warning',
+      showCancelButton: true,
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Delete product'
+    }).then(function (result) {
+      if (result.value) submitSecurePost('products', {deleteProductId: productId});
+    });
+  });
+})();

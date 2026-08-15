@@ -35,6 +35,27 @@ class ControllerProducts
         ];
     }
 
+    private static function remoteImageUrl(string $field): ?string
+    {
+        $url = trim((string) ($_POST[$field] ?? ''));
+        if ($url === '') {
+            return null;
+        }
+        $parts = parse_url($url);
+        $host = strtolower((string) ($parts['host'] ?? ''));
+        if (strlen($url) > 2048
+            || filter_var($url, FILTER_VALIDATE_URL) === false
+            || !is_array($parts)
+            || strtolower((string) ($parts['scheme'] ?? '')) !== 'https'
+            || !in_array($host, ['images.openfoodfacts.org', 'static.openfoodfacts.org'], true)
+            || isset($parts['user'])
+            || isset($parts['pass'])
+            || preg_match('/[\x00-\x1F\x7F]/', $url)) {
+            throw new InvalidArgumentException('Choose an image returned by the product catalogue or upload a local image.');
+        }
+        return $url;
+    }
+
     public static function ctrCreateProducts(): void
     {
         if (!isset($_POST['newDescription'])) {
@@ -47,10 +68,13 @@ class ControllerProducts
             return;
         }
         try {
-            $data['image'] = store_uploaded_image($_FILES['newProdPhoto'] ?? [], 'views/img/products', $data['code'])
-                ?? 'views/img/products/default/anonymous.png';
+            $uploaded = store_uploaded_image($_FILES['newProdPhoto'] ?? [], 'views/img/products', $data['code']);
+            $remote = self::remoteImageUrl('newImageUrl');
+            $data['image'] = $uploaded ?? $remote ?? 'views/img/products/default/anonymous.png';
             $result = ProductsModel::mdlAddProduct('products', $data);
-            if ($result === 'ok') { audit_event('product.created', 'product', $data['code']); }
+            if ($result === 'ok') {
+                audit_event('product.created', 'product', $data['code'], ['image_source' => $uploaded !== null ? 'upload' : ($remote !== null ? 'remote' : 'default')]);
+            }
             ui_alert($result === 'ok' ? 'success' : 'error', $result === 'ok' ? 'Product saved.' : 'Product could not be saved.', 'products');
         } catch (Throwable $error) {
             ui_alert('error', app_config('debug') ? $error->getMessage() : 'Product could not be saved.', 'products');
@@ -72,14 +96,16 @@ class ControllerProducts
         try {
             $data['image'] = (string) $existing['image'];
             $uploaded = store_uploaded_image($_FILES['editImage'] ?? [], 'views/img/products', $data['code']);
-            if ($uploaded !== null) {
-                if ($data['image'] !== 'views/img/products/default/anonymous.png') {
-                    safe_managed_file_delete($data['image'], 'views/img/products');
-                }
-                $data['image'] = $uploaded;
+            $remote = self::remoteImageUrl('editImageUrl');
+            $replacement = $uploaded ?? $remote;
+            if ($replacement !== null && $replacement !== $data['image']) {
+                safe_managed_file_delete($data['image'], 'views/img/products');
+                $data['image'] = $replacement;
             }
             $result = ProductsModel::mdlEditProduct('products', $data);
-            if ($result === 'ok') { audit_event('product.updated', 'product', $data['code']); }
+            if ($result === 'ok') {
+                audit_event('product.updated', 'product', $data['code'], ['image_source' => $uploaded !== null ? 'upload' : ($remote !== null ? 'remote' : 'unchanged')]);
+            }
             ui_alert($result === 'ok' ? 'success' : 'error', $result === 'ok' ? 'Product updated.' : 'Product could not be updated.', 'products');
         } catch (Throwable $error) {
             ui_alert('error', app_config('debug') ? $error->getMessage() : 'Product could not be updated.', 'products');
