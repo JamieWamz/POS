@@ -34,7 +34,7 @@ function filterCategory(categorySelected) {
   var categories = window.categories || [];
 
   if (!catalog || catalog.length === 0) {
-    grid.append('<div class="col-xs-12"><p class="text-muted">No products found in database.</p></div>');
+    grid.append('<div class="pos-inline-empty">No products have been added yet.</div>');
     return;
   }
 
@@ -71,7 +71,7 @@ function filterCategory(categorySelected) {
   }
 
   if (filtered.length === 0) {
-    grid.append('<div class="col-xs-12"><p class="text-muted">No products in this category.</p></div>');
+    grid.append('<div class="pos-inline-empty">No products match this category or search.</div>');
     return;
   }
 
@@ -118,7 +118,7 @@ function addProductToSale(productId) {
   let existingInput = $(`#idProduct${id}`);
 
   if (existingInput.length > 0) {
-    let qtyInput = existingInput.closest('.row').find('.newProductQuantity');
+    let qtyInput = existingInput.closest('.pos-cart-line, .row').find('.newProductQuantity');
     let currentQty = parseInt(qtyInput.val()) || 0;
 
     if (currentQty + 1 > stock) {
@@ -134,20 +134,20 @@ function addProductToSale(productId) {
     qtyInput.val(currentQty + 1).trigger('change');
   } else {
     const rowHtml = `
-      <div class="row" style="padding:5px 15px">
-        <div class="col-xs-6" style="padding-right:0px">
+      <div class="row g-2 pos-cart-line">
+        <div class="col-7">
           <div class="input-group">
-            <span class="input-group-addon"><button type="button" class="btn btn-danger btn-xs removeProduct" idProduct="${id}"><i class="fa fa-times"></i></button></span>
+            <button type="button" class="btn btn-danger removeProduct" idProduct="${id}" aria-label="Remove ${escapeHtml(desc)}"><i class="fa fa-times"></i></button>
             <input type="text" class="form-control newProductDescription" idProduct="${id}" id="idProduct${id}" name="addProductSale" value="${escapeHtml(desc)}" readonly required>
           </div>
         </div>
-        <div class="col-xs-3 enterQuantity">
-          <input type="number" class="form-control newProductQuantity" name="newProductQuantity" min="1" value="1" stock="${stock}" newStock="${stock - 1}" required>
+        <div class="col-2 enterQuantity">
+          <input type="number" class="form-control newProductQuantity" name="newProductQuantity" min="1" value="1" stock="${stock}" newStock="${stock - 1}" aria-label="Quantity" required>
         </div>
-        <div class="col-xs-3 enterPrice" style="padding-left:0px">
+        <div class="col-3 enterPrice">
           <div class="input-group">
-            <span class="input-group-addon"><b>K</b></span>
-            <input type="text" class="form-control newProductPrice" realPrice="${price}" name="newProductPrice" value="${price}" readonly required>
+            <span class="input-group-text"><b>K</b></span>
+            <input type="text" class="form-control newProductPrice" realPrice="${price}" name="newProductPrice" value="${price}" aria-label="Line total" readonly required>
           </div>
         </div>
       </div>
@@ -290,7 +290,8 @@ MODIFY QUANTITY & RECALCULATE
 =============================================*/
 
 $(".saleForm").on("change keyup", "input.newProductQuantity", function(){
-  var price = $(this).parent().parent().children(".enterPrice").children().children(".newProductPrice");
+  var line = $(this).closest('.pos-cart-line, .row');
+  var price = line.find('.newProductPrice');
   var finalPrice = ($(this).val() * price.attr("realPrice")).toFixed(2);
 
   price.val(finalPrice);
@@ -389,35 +390,17 @@ $("#newPaymentMethod").change(function(){
   var method = $(this).val();
 
   if(method == "cash"){
-    // Adjust column width for payment dropdown container
-    $(this).closest('.col-xs-6, .col-xs-4, .col-xs-12').removeClass("col-xs-6 col-xs-12").addClass("col-xs-4");
-
-    // Target paymentMethodBoxes directly with labels embedded inside addons
     $(".paymentMethodBoxes").html(
-       '<!-- Container aligned under Taxes and Total -->' +
-       '<div class="col-xs-8 pull-right" style="padding-left: 0; padding-right: 0;">' +
-         '<div class="row">' +
-           '<!-- Cash Received -->' +
-           '<div class="col-xs-6" style="padding-right: 5px;">' +
-             '<div class="form-group" style="margin-bottom: 0;">' +
-               '<div class="input-group">' +
-                 '<span class="input-group-addon"><b>Received K</b></span>' +
-                 '<input type="text" class="form-control" id="newCashValue" name="newCashValue" placeholder="000000" required>' +
-               '</div>' +
-             '</div>' +
-           '</div>' +
-
-           '<!-- Change -->' +
-           '<div class="col-xs-6" id="getCashChange" style="padding-left: 5px;">' +
-             '<div class="form-group" style="margin-bottom: 0;">' +
-               '<div class="input-group">' +
-                 '<span class="input-group-addon"><b>Change K</b></span>' +
-                 '<input type="text" class="form-control" id="newCashChange" name="newCashChange" placeholder="000000" readonly required>' +
-               '</div>' +
-             '</div>' +
-           '</div>' +
-         '</div>' +
-       '</div>'
+      '<div class="pos-payment-fields">' +
+        '<div><label class="pos-field-label" for="newCashValue">Cash received</label>' +
+          '<div class="input-group"><span class="input-group-text">K</span>' +
+            '<input type="text" class="form-control" id="newCashValue" name="newCashValue" inputmode="decimal" required>' +
+          '</div></div>' +
+        '<div id="getCashChange"><label class="pos-field-label" for="newCashChange">Change due</label>' +
+          '<div class="input-group"><span class="input-group-text">K</span>' +
+            '<input type="text" class="form-control" id="newCashChange" name="newCashChange" value="0.00" readonly required>' +
+          '</div></div>' +
+      '</div>'
     );
 
     $('#newCashValue').number(true, 2);
@@ -428,18 +411,16 @@ $("#newPaymentMethod").change(function(){
       calculateChange();
     }
 
-    if (typeof listMethods === "function") {
-      listMethods();
-    }
   } else {
-    $(this).closest('.col-xs-4, .col-xs-12').removeClass('col-xs-4 col-xs-12').addClass('col-xs-6');
+    if (!method) {
+      $(".paymentMethodBoxes").empty();
+      return;
+    }
     $(".paymentMethodBoxes").html(
-       '<div class="col-xs-6" style="padding-left: 0px;">' +
-                '<div class="input-group">' +
-          '<input type="text" maxlength="60" class="form-control" id="newTransactionCode" name="newTransactionCode" placeholder="Transaction reference" required>' +
-                  '<span class="input-group-addon"><i class="fa fa-lock"></i></span>' +
-                '</div>' +
-            '</div>'
+      '<div><label class="pos-field-label" for="newTransactionCode">Transaction reference</label>' +
+        '<div class="input-group"><span class="input-group-text"><i class="fa fa-lock"></i></span>' +
+          '<input type="text" maxlength="60" class="form-control" id="newTransactionCode" name="newTransactionCode" placeholder="Reference from terminal or mobile money" required>' +
+        '</div></div>'
     );
     var savedReference = $(this).attr('data-reference');
     if (savedReference) {
@@ -479,9 +460,6 @@ function calculateChange(){
     $("#newCashChange").val(change.toFixed(2));
   }
 
-  if (typeof listMethods === "function") {
-    listMethods();
-  }
 }
 
 /*=============================================
