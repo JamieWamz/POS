@@ -1,229 +1,137 @@
-/*=============================================
-UPLOADING USER PICTURE
-=============================================*/
+(function ($) {
+  'use strict';
 
-$(".newPics").change(function(){
+  var placeholder = 'views/img/users/default/prfplaceholder.png';
+  var allowedPhotoTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  var maxPhotoBytes = 5 * 1024 * 1024;
 
-  var newImage = this.files[0];
-
-  /*===============================================
-  =            validating image format            =
-  ===============================================*/
-
-  if (newImage["type"] != "image/jpeg" && newImage["type"] != "image/png"){
-
-    $(".newPics").val("");
-
-    swal({
-      type: "error",
-      title: "Error uploading image",
-      text: "¡Image has to be JPEG or PNG!",
-      showConfirmButton: true,
-      confirmButtonText: "Close"
-    });
-
-  }else if(newImage["size"] > 2000000){
-
-    $(".newPics").val("");
-
-    swal({
-      type: "error",
-      title: "Error uploading image",
-      text: "¡Image too big. It has to be less than 2Mb!",
-      showConfirmButton: true,
-      confirmButtonText: "Close"
-    });
-
-  }else{
-
-    var imgData = new FileReader;
-    imgData.readAsDataURL(newImage);
-
-    $(imgData).on("load", function(event){
-
-      var routeImg = event.target.result;
-
-      $(".preview").attr("src", routeImg);
-
-    });
-
+  function showError(title, message) {
+    swal({type: 'error', title: title, text: message, confirmButtonText: 'Close'});
   }
 
-  /*=====  End of validating image format  ======*/
+  function resetPreview(input) {
+    var preview = document.getElementById(input.dataset.previewTarget || '');
+    input.value = '';
+    if (preview) preview.src = preview.dataset.savedSource || placeholder;
+  }
 
-})
+  $(document).on('change', '.pos-user-photo-input', function () {
+    var input = this;
+    var file = input.files && input.files[0];
+    var preview = document.getElementById(input.dataset.previewTarget || '');
+    if (!file || !preview) return;
 
-
-/*=============================================
-EDITING USER PICTURE
-=============================================*/
-$(document).on("click", ".btnEditUser", function(){
-
-   var idUser = $(this).attr("idUser");
-
-   var data = new FormData();
-   data.append("idUser", idUser);
-
-   $.ajax({
-
-     url: "ajax/users.ajax.php",
-     method: "POST",
-     data: data,
-     cache: false,
-     contentType: false,
-     processData: false,
-     dataType: "json",
-     success: function(answer){
-
-       // console.log("answer", answer);
-
-       $("#EditName").val(answer["name"]);
-
-       $("#EditUser").val(answer["user"]);
-
-       $("#EditProfile").html(answer["profile"]);
-
-       $("#EditProfile").val(answer["profile"]);
-
-       if(answer["photo"] != ''){
-
-         $('.preview').attr('src', answer["photo"]);
-
-       }
-
-     }
-
-   });
-
- });
-
-
-/*=============================================
-ACTIVATE USER
-=============================================*/
-$(document).on("click", ".btnActivate", function(){
-
-  var userId = $(this).attr("userId");
-  var userStatus = $(this).attr("userStatus");
-
-  var datum = new FormData();
-   datum.append("activateId", userId);
-    datum.append("activateUser", userStatus);
-
-    $.ajax({
-
-    url:"ajax/users.ajax.php",
-    method: "POST",
-    data: datum,
-    cache: false,
-      contentType: false,
-      processData: false,
-      success: function(answer){
-
-        // console.log("answer", answer);
-
-        if(window.matchMedia("(max-width:767px)").matches){
-
-      swal({
-        title: "The user status has been updated",
-        type: "success",
-        confirmButtonText: "Close"
-      }).then(function(result) {
-
-        if (result.value) {
-          window.location = "users";
-        }
-
-      })
-
+    if (allowedPhotoTypes.indexOf(file.type) === -1) {
+      resetPreview(input);
+      showError('Unsupported photo', 'Choose a JPEG, PNG or WebP image.');
+      return;
+    }
+    if (file.size > maxPhotoBytes) {
+      resetPreview(input);
+      showError('Photo is too large', 'Choose an image that is 5 MB or smaller.');
+      return;
     }
 
-      }
-
-    })
-
-    if(userStatus == 0){
-
-      $(this).removeClass('btn-success');
-      $(this).addClass('btn-danger');
-      $(this).html('Deactivated');
-      $(this).attr('userStatus',1);
-
-    }else{
-
-      $(this).addClass('btn-success');
-      $(this).removeClass('btn-danger');
-      $(this).html('Activated');
-      $(this).attr('userStatus',0);
-
-    }
-
-});
-
-
-/*=============================================
-VALIDATE IF USER ALREADY EXISTS
-=============================================*/
-
-$("#newUser").change(function(){
-
-  $(".alert").remove();
-
-  var user = $(this).val();
-
-  var data = new FormData();
-   data.append("validateUser", user);
-
-    $.ajax({
-
-    url:"ajax/users.ajax.php",
-    method: "POST",
-    data: data,
-    cache: false,
-      contentType: false,
-      processData: false,
-      dataType: "json",
-      success: function(answer){
-
-        // console.log("answer", answer);
-
-        if(answer){
-
-          $("#newUser").parent().after('<div class="alert alert-warning">This user is already taken</div>');
-
-          $("#newUser").val('');
-        }
-
-      }
-
+    var reader = new FileReader();
+    reader.addEventListener('load', function (event) {
+      preview.src = event.target.result;
+      if (input.id === 'editPhoto') $('#removePhoto').prop('checked', false);
     });
+    reader.readAsDataURL(file);
+  });
 
-});
+  $('#removePhoto').on('change', function () {
+    if (!this.checked) return;
+    var input = document.getElementById('editPhoto');
+    if (input) input.value = '';
+    $('#editUserPhotoPreview').attr('src', placeholder);
+  });
 
-/*=============================================
-DELETE USER
-=============================================*/
+  $(document).on('click', '.btnEditUser', function () {
+    var idUser = $(this).data('user-id');
+    $.ajax({
+      url: 'ajax/users.ajax.php',
+      method: 'POST',
+      data: {idUser: idUser},
+      dataType: 'json'
+    }).done(function (answer) {
+      $('#EditName').val(answer.name || '');
+      $('#EditUser').val(answer.user || '');
+      $('#EditProfile').val(answer.profile || '');
+      $('#EditPasswd').val('');
+      $('#editPhoto').val('');
+      $('#removePhoto').prop('checked', false);
+      $('#editUserPhotoPreview')
+        .attr('src', answer.photo || placeholder)
+        .attr('data-saved-source', answer.photo || placeholder);
+    }).fail(function (xhr) {
+      showError('User could not be loaded', (xhr.responseJSON && xhr.responseJSON.error) || 'Refresh the page and try again.');
+    });
+  });
 
-$(document).on("click", ".btnDeleteUser", function(){
+  $(document).on('click', '.btnActivate', function () {
+    var button = $(this);
+    var nextStatus = Number(button.data('user-status'));
+    button.prop('disabled', true);
+    $.ajax({
+      url: 'ajax/users.ajax.php',
+      method: 'POST',
+      data: {activateId: button.data('user-id'), activateUser: nextStatus},
+      dataType: 'json'
+    }).done(function (answer) {
+      if (!answer.ok) {
+        showError('Status was not changed', answer.error || 'Refresh the page and try again.');
+        return;
+      }
+      var nowActive = nextStatus === 1;
+      button.toggleClass('btn-success', nowActive).toggleClass('btn-danger', !nowActive);
+      button.text(nowActive ? 'Active' : 'Inactive');
+      button.data('user-status', nowActive ? 0 : 1);
+    }).fail(function (xhr) {
+      showError('Status was not changed', (xhr.responseJSON && xhr.responseJSON.error) || 'Refresh the page and try again.');
+    }).always(function () {
+      button.prop('disabled', false);
+    });
+  });
 
-  var userId = $(this).attr("userId");
-  swal({
-    title: '¿Are you sure you want to delete the user?',
-    text: "¡if you're not sure you can cancel!",
-    type: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+  $('#newUser').on('change', function () {
+    var input = $(this);
+    var feedback = $('#newUserFeedback');
+    $.ajax({
+      url: 'ajax/users.ajax.php',
+      method: 'POST',
+      data: {validateUser: input.val()},
+      dataType: 'json'
+    }).done(function (answer) {
+      if (answer) {
+        input.val('').addClass('is-invalid');
+        feedback.text('That username is already in use.').removeClass('text-success').addClass('text-danger');
+      } else {
+        input.removeClass('is-invalid');
+        feedback.text('Username is available.').removeClass('text-danger').addClass('text-success');
+      }
+    });
+  });
+
+  $(document).on('click', '.btnDeleteUser', function () {
+    var userId = $(this).data('user-id');
+    swal({
+      title: 'Delete this team member?',
+      text: 'Accounts linked to financial history cannot be deleted.',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#8f2f2f',
       cancelButtonText: 'Cancel',
-      confirmButtonText: 'Yes, delete user!'
-    }).then(function(result){
+      confirmButtonText: 'Delete account'
+    }).then(function (result) {
+      if (result.value) submitSecurePost('users', {deleteUserId: userId});
+    });
+  });
 
-    if(result.value){
-
-        submitSecurePost("users", {deleteUserId: userId});
-
-    }
-
-  })
-
-});
+  $('#addUser').on('hidden.bs.modal', function () {
+    var form = this.querySelector('form');
+    if (form) form.reset();
+    $('#newUserPhotoPreview').attr('src', placeholder);
+    $('#newUserFeedback').text('Letters, numbers, dots, underscores and hyphens.').removeClass('text-danger text-success');
+  });
+})(jQuery);

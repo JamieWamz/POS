@@ -94,7 +94,7 @@ class ControllerUsers
                 'photo' => $photo,
             ]);
             if ($result === 'ok') {
-                audit_event('user.created', 'user', $username, ['profile' => $profile]);
+                audit_event('user.created', 'user', $username, ['profile' => $profile, 'has_photo' => $photo !== '']);
             }
             ui_alert($result === 'ok' ? 'success' : 'error', $result === 'ok' ? 'User added successfully.' : 'The user could not be added.', 'users');
         } catch (Throwable $error) {
@@ -134,6 +134,9 @@ class ControllerUsers
             if ($uploaded !== null) {
                 safe_managed_file_delete($photo, 'views/img/users');
                 $photo = $uploaded;
+            } elseif (($_POST['removePhoto'] ?? '') === '1') {
+                safe_managed_file_delete($photo, 'views/img/users');
+                $photo = '';
             }
             $result = UsersModel::mdlEditUser('users', [
                 'name' => $name,
@@ -143,7 +146,12 @@ class ControllerUsers
                 'photo' => $photo,
             ]);
             if ($result === 'ok') {
-                audit_event('user.updated', 'user', $username, ['profile' => $profile]);
+                if ((int) $existing['id'] === (int) $_SESSION['id']) {
+                    $_SESSION['name'] = $name;
+                    $_SESSION['photo'] = $photo;
+                    $_SESSION['profile'] = $profile;
+                }
+                audit_event('user.updated', 'user', $username, ['profile' => $profile, 'has_photo' => $photo !== '']);
             }
             ui_alert($result === 'ok' ? 'success' : 'error', $result === 'ok' ? 'User updated successfully.' : 'The user could not be updated.', 'users');
         } catch (Throwable $error) {
