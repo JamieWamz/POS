@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --canvas: 247 244 238;
+  --surface: 255 253 249;
+  --elevated: 255 255 255;
+  --ink: 27 24 21;
+  --muted: 102 94 85;
+  --line: 217 210 199;
+  color-scheme: light;
+}
+
+.dark {
+  --canvas: 17 16 19;
+  --surface: 24 22 27;
+  --elevated: 31 29 35;
+  --ink: 246 242 235;
+  --muted: 181 173 164;
+  --line: 65 60 69;
+  color-scheme: dark;
+}
+
+* {
+  border-color: rgb(var(--line));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  @apply min-h-screen bg-canvas font-sans text-ink antialiased;
+}
+
+::selection {
+  @apply bg-amethyst-500/25 text-ink;
+}
+
+@layer base {
+  :focus-visible {
+    @apply outline-none ring-2 ring-amethyst-500 ring-offset-2 ring-offset-canvas;
+  }
+
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.18em] text-champagne-700 dark:text-champagne-200;
+  }
+
+  .glass-panel {
+    @apply border border-line/80 bg-surface/90 shadow-luxury backdrop-blur-xl;
+  }
+
+  .field {
+    @apply min-h-11 w-full rounded-xl border border-line bg-elevated px-3 py-2 text-sm text-ink shadow-sm transition-colors duration-160 placeholder:text-muted/70 hover:border-muted/60 focus:border-amethyst-500;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-sm font-semibold text-ink;
+  }
+}
