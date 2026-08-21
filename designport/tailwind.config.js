@@ -22,17 +22,17 @@ module.exports = {
         ink: "rgb(var(--ink) / <alpha-value>)",
         muted: "rgb(var(--muted) / <alpha-value>)",
         line: "rgb(var(--line) / <alpha-value>)",
-        champagne: {
-          200: "#eadbb8",
-          400: "#c9aa67",
-          500: "#a9823b",
-          700: "#6f5425"
+        acid: {
+          200: "#ecffb5",
+          400: "#cfff47",
+          500: "#a9dc28",
+          700: "#4f6f00"
         },
-        amethyst: {
-          400: "#a78bfa",
-          500: "#7c5ce5",
-          600: "#6846d4",
-          700: "#5635b9"
+        signal: {
+          400: "#91a9ff",
+          500: "#4f6cff",
+          600: "#3b55e6",
+          700: "#2942bf"
         }
       },
       fontFamily: {
@@ -56,8 +56,8 @@ module.exports = {
         "3xl": "1.5rem"
       },
       boxShadow: {
-        luxury: "0 24px 70px -32px rgb(30 23 18 / 0.32)",
-        glow: "0 0 0 1px rgb(169 130 59 / 0.18), 0 18px 48px -24px rgb(124 92 229 / 0.30)"
+        luxury: "0 28px 80px -40px rgb(14 16 24 / 0.42)",
+        glow: "0 0 0 1px rgb(79 108 255 / 0.22), 0 22px 54px -28px rgb(79 108 255 / 0.52)"
       },
       transitionDuration: {
         160: "160ms",

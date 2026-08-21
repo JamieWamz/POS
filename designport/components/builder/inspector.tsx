@@ -8,9 +8,9 @@ import type { ContactContent, HeroContent, PortfolioBlock, ProjectsContent, Text
 export function Inspector({ block, onChange }: { block: PortfolioBlock | null; onChange: (block: PortfolioBlock) => void }) {
   if (!block) {
     return (
-      <aside className="rounded-2xl border bg-surface p-5 lg:sticky lg:top-20" aria-labelledby="inspector-title">
-        <p className="eyebrow">Refine</p>
-        <h2 id="inspector-title" className="mt-2 font-display text-xl font-semibold">Select a block</h2>
+      <aside className="studio-panel rounded-[1.5rem] p-5 lg:sticky lg:top-36" aria-labelledby="inspector-title">
+        <p className="index-label">Properties</p>
+        <h2 id="inspector-title" className="mt-3 font-display text-2xl font-semibold">Select a section</h2>
         <p className="mt-3 text-sm leading-6 text-muted">Choose a section on the canvas to edit its copy, alignment and tone.</p>
       </aside>
     );
@@ -21,10 +21,9 @@ export function Inspector({ block, onChange }: { block: PortfolioBlock | null; o
   }
 
   return (
-    <aside className="rounded-2xl border bg-surface p-5 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto" aria-labelledby="inspector-title">
-      <p className="eyebrow">Refine</p>
-      <h2 id="inspector-title" className="mt-2 font-display text-xl font-semibold capitalize">{block.type} block</h2>
-      <div className="mt-5 space-y-4">
+    <aside className="studio-panel rounded-[1.5rem] p-5 lg:sticky lg:top-36 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto" aria-labelledby="inspector-title">
+      <div className="border-b pb-4"><div className="flex items-center justify-between"><p className="index-label">Properties</p><span className="rounded-full bg-signal-500/10 px-2.5 py-1 text-[0.625rem] font-extrabold uppercase tracking-wider text-signal-700 dark:text-signal-400">Selected</span></div><h2 id="inspector-title" className="mt-3 font-display text-2xl font-semibold capitalize">{block.type} section</h2></div>
+      <div className="mt-5 space-y-5">
         {block.type === "hero" && <HeroFields content={block.content as HeroContent} onChange={changeContent} />}
         {block.type === "text" && <TextFields content={block.content as TextContent} onChange={changeContent} />}
         {block.type === "projects" && <ProjectFields content={block.content as ProjectsContent} onChange={changeContent} />}
@@ -87,7 +86,7 @@ function ProjectFields({ content, onChange }: { content: ProjectsContent; onChan
       <fieldset className="space-y-4">
         <legend className="field-label">Projects</legend>
         {content.items.map((item, index) => (
-          <div key={index} className="rounded-xl border bg-elevated p-3">
+          <div key={index} className="rounded-2xl border bg-elevated p-3.5">
             <div className="flex items-center justify-between"><p className="text-xs font-bold text-muted">Project {index + 1}</p>
               <Button variant="ghost" className="size-10 px-0 text-red-700 dark:text-red-300" disabled={content.items.length === 1} onClick={() => onChange({ ...content, items: content.items.filter((_, itemIndex) => itemIndex !== index) })} aria-label={`Remove project ${index + 1}`}><Trash2 size={15} aria-hidden="true" /></Button>
             </div>

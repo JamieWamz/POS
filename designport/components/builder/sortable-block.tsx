@@ -29,11 +29,11 @@ export function SortableBlock({ block, selected, index, count, onSelect, onMove,
     <article
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={cn("group relative border-2 border-transparent", selected && "z-10 border-amethyst-500", isDragging && "z-20 opacity-60 shadow-2xl")}
+      className={cn("group relative border-2 border-transparent transition-[border-color,box-shadow]", selected && "z-10 border-signal-500 shadow-[inset_0_0_0_1px_rgba(255,255,255,.45)]", isDragging && "z-20 opacity-60 shadow-2xl")}
       onClick={onSelect}
       aria-label={`${block.type} block, position ${index + 1} of ${count}${selected ? ", selected" : ""}`}
     >
-      <div className={cn("absolute left-2 top-2 z-20 flex flex-wrap items-center rounded-xl border bg-elevated/95 p-1 text-ink shadow-lg backdrop-blur transition-opacity", selected ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100")}>
+      <div className={cn("absolute right-3 top-3 z-20 flex flex-wrap items-center rounded-full border bg-elevated/95 p-1 text-ink shadow-xl backdrop-blur transition-all", selected ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100")}>
         <button className="grid size-10 cursor-grab place-items-center rounded-lg hover:bg-canvas active:cursor-grabbing" aria-label={`Drag ${block.type} block`} {...attributes} {...listeners}>
           <GripVertical size={17} aria-hidden="true" />
         </button>

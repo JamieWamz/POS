@@ -40,9 +40,9 @@ export default async function PublicPortfolioPage({ params }: Props) {
   return (
     <main id="main-content" tabIndex={-1}>
       <PortfolioRenderer blocks={blocks} theme={theme} publicPage title={record.title} />
-      <footer className="flex flex-col items-center justify-between gap-3 border-t bg-canvas px-6 py-6 text-sm text-muted sm:flex-row">
-        <span>Last updated <time dateTime={record.updatedAt.toISOString()}>{new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(record.updatedAt)}</time></span>
-        <Logo className="text-xs" />
+      <footer className="flex flex-col items-center justify-between gap-4 border-t bg-ink px-6 py-7 text-xs font-semibold text-white/50 sm:flex-row lg:px-10">
+        <span>Last updated <time className="text-white" dateTime={record.updatedAt.toISOString()}>{new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(record.updatedAt)}</time></span>
+        <Logo className="text-xs text-white [&>span:first-child]:bg-white [&>span:first-child]:text-neutral-950" />
       </footer>
     </main>
   );

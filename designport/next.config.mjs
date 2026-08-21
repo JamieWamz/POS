@@ -3,6 +3,10 @@ const nextConfig = {
   output: "standalone",
   poweredByHeader: false,
   reactStrictMode: true,
+  staticPageGenerationTimeout: 180,
+  experimental: {
+    cpus: 1
+  },
   async headers() {
     return [
       {

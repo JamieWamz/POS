@@ -3,22 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --canvas: 247 244 238;
-  --surface: 255 253 249;
+  --canvas: 242 239 232;
+  --surface: 249 247 242;
   --elevated: 255 255 255;
-  --ink: 27 24 21;
-  --muted: 102 94 85;
-  --line: 217 210 199;
+  --ink: 18 19 22;
+  --muted: 91 91 88;
+  --line: 203 200 191;
   color-scheme: light;
 }
 
 .dark {
-  --canvas: 17 16 19;
-  --surface: 24 22 27;
-  --elevated: 31 29 35;
-  --ink: 246 242 235;
-  --muted: 181 173 164;
-  --line: 65 60 69;
+  --canvas: 13 14 17;
+  --surface: 20 21 25;
+  --elevated: 27 28 33;
+  --ink: 245 243 237;
+  --muted: 174 172 165;
+  --line: 57 58 65;
   color-scheme: dark;
 }
 
@@ -28,6 +28,7 @@
 
 html {
   scroll-behavior: smooth;
+  background: rgb(var(--canvas));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -42,15 +43,19 @@ html {
 
 body {
   @apply min-h-screen bg-canvas font-sans text-ink antialiased;
+  background-image:
+    linear-gradient(rgb(var(--line) / 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--line) / 0.16) 1px, transparent 1px);
+  background-size: 80px 80px;
 }
 
 ::selection {
-  @apply bg-amethyst-500/25 text-ink;
+  @apply bg-acid-400 text-neutral-950;
 }
 
 @layer base {
   :focus-visible {
-    @apply outline-none ring-2 ring-amethyst-500 ring-offset-2 ring-offset-canvas;
+    @apply outline-none ring-2 ring-signal-500 ring-offset-2 ring-offset-canvas;
   }
 
   h1, h2, h3 {
@@ -64,18 +69,42 @@ body {
 
 @layer components {
   .eyebrow {
-    @apply text-xs font-bold uppercase tracking-[0.18em] text-champagne-700 dark:text-champagne-200;
+    @apply inline-flex items-center gap-2 text-[0.6875rem] font-extrabold uppercase tracking-[0.2em] text-signal-700 dark:text-signal-400;
+  }
+
+  .eyebrow::before {
+    content: "";
+    @apply block size-2 rounded-full bg-acid-400;
   }
 
   .glass-panel {
     @apply border border-line/80 bg-surface/90 shadow-luxury backdrop-blur-xl;
   }
 
+  .studio-panel {
+    @apply border border-line bg-surface shadow-[0_1px_0_rgb(var(--elevated)),0_20px_50px_-36px_rgb(0_0_0/0.45)];
+  }
+
+  .editorial-grid {
+    background-image:
+      linear-gradient(rgb(var(--line) / 0.22) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--line) / 0.22) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
   .field {
-    @apply min-h-11 w-full rounded-xl border border-line bg-elevated px-3 py-2 text-sm text-ink shadow-sm transition-colors duration-160 placeholder:text-muted/70 hover:border-muted/60 focus:border-amethyst-500;
+    @apply min-h-11 w-full rounded-xl border border-line bg-elevated px-3.5 py-2 text-sm text-ink shadow-[inset_0_1px_0_rgb(255_255_255/0.06)] transition duration-160 placeholder:text-muted/[.65] hover:border-muted/70 focus:border-signal-500;
   }
 
   .field-label {
-    @apply mb-1.5 block text-sm font-semibold text-ink;
+    @apply mb-1.5 block text-xs font-extrabold uppercase tracking-[0.08em] text-ink;
+  }
+
+  .index-label {
+    @apply font-mono text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-muted;
+  }
+
+  .signal-chip {
+    @apply inline-flex min-h-8 items-center gap-2 rounded-full border border-ink/[.15] bg-acid-400 px-3 text-[0.6875rem] font-extrabold uppercase tracking-[0.12em] text-neutral-950;
   }
 }

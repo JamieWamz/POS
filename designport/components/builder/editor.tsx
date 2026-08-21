@@ -220,13 +220,15 @@ export function Editor({ portfolio }: { portfolio: PortfolioDocument }) {
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <main id="main-content" tabIndex={-1} className="min-h-[calc(100vh-4rem)] bg-canvas">
+      <main id="main-content" tabIndex={-1} className="min-h-[calc(100vh-4.5rem)] bg-canvas">
         <h1 className="sr-only">Edit {title || "untitled portfolio"}</h1>
-        <div className="sticky top-16 z-40 border-b bg-surface/95 px-4 py-3 backdrop-blur-xl sm:px-6 lg:px-8">
+        <div className="sticky top-[4.5rem] z-40 border-b bg-surface/95 px-4 py-3 backdrop-blur-2xl sm:px-6 lg:px-8">
           <div className="mx-auto flex max-w-[1536px] flex-wrap items-center gap-2">
-            <div className="mr-auto min-w-0">
-              <p className="truncate text-sm font-bold">{title || "Untitled portfolio"}</p>
+            <div className="mr-auto flex min-w-0 items-center gap-3">
+              <span className="hidden size-9 place-items-center rounded-xl bg-ink text-[0.625rem] font-black text-canvas sm:grid">ED</span>
+              <div><p className="truncate text-sm font-extrabold">{title || "Untitled portfolio"}</p>
               <SaveIndicator status={saveStatus} error={saveError} />
+              </div>
             </div>
             <Button variant="ghost" className="size-11 px-0" onClick={undo} disabled={past.length === 0} aria-label="Undo canvas change"><Undo2 size={17} aria-hidden="true" /></Button>
             <Button variant="ghost" className="size-11 px-0" onClick={redo} disabled={future.length === 0} aria-label="Redo canvas change"><Redo2 size={17} aria-hidden="true" /></Button>
@@ -238,14 +240,14 @@ export function Editor({ portfolio }: { portfolio: PortfolioDocument }) {
           </div>
         </div>
 
-        <div className="mx-auto grid max-w-[1536px] gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)_18rem] lg:items-start lg:px-8 xl:grid-cols-[17rem_minmax(0,1fr)_20rem]">
+        <div className="mx-auto grid max-w-[1536px] gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[14rem_minmax(0,1fr)_18rem] lg:items-start lg:px-8 xl:grid-cols-[16rem_minmax(0,1fr)_20rem]">
           <BlockPalette onAdd={addBlock} />
           <div className="min-w-0">
-            <section className="mb-5 rounded-2xl border bg-surface p-4" aria-labelledby="page-settings-title">
-              <h2 id="page-settings-title" className="font-display text-lg font-semibold">Page settings</h2>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <section className="studio-panel mb-5 rounded-[1.5rem] p-4 sm:p-5" aria-labelledby="page-settings-title">
+              <div className="flex items-center justify-between border-b pb-3"><div><p className="index-label">Portfolio details</p><h2 id="page-settings-title" className="mt-1 font-display text-xl font-semibold">Page settings</h2></div><span className="hidden rounded-full bg-acid-400 px-3 py-1 text-[0.625rem] font-black uppercase tracking-wider text-neutral-950 sm:inline">Live document</span></div>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <div><label htmlFor="portfolio-title" className="field-label">Portfolio title</label><input id="portfolio-title" className="field" maxLength={80} value={title} onChange={(event) => changeMetadata(setTitle, event.target.value)} /></div>
-                <div><label htmlFor="portfolio-slug" className="field-label">Public URL</label><div className="flex items-center rounded-xl border bg-elevated pl-3 text-xs text-muted focus-within:ring-2 focus-within:ring-amethyst-500"><span>/p/</span><input id="portfolio-slug" className="min-h-11 min-w-0 flex-1 bg-transparent px-1 py-2 text-sm text-ink outline-none" maxLength={48} value={slug} onChange={(event) => changeMetadata(setSlug, event.target.value.toLowerCase())} aria-describedby="slug-hint" /></div><p id="slug-hint" className="mt-1 text-xs text-muted">Lowercase letters, numbers and hyphens.</p></div>
+                <div><label htmlFor="portfolio-slug" className="field-label">Public URL</label><div className="flex items-center rounded-xl border bg-elevated pl-3 text-xs text-muted focus-within:ring-2 focus-within:ring-signal-500"><span>/p/</span><input id="portfolio-slug" className="min-h-11 min-w-0 flex-1 bg-transparent px-1 py-2 text-sm text-ink outline-none" maxLength={48} value={slug} onChange={(event) => changeMetadata(setSlug, event.target.value.toLowerCase())} aria-describedby="slug-hint" /></div><p id="slug-hint" className="mt-1 text-xs text-muted">Lowercase letters, numbers and hyphens.</p></div>
                 <div className="sm:col-span-2"><label htmlFor="portfolio-description" className="field-label">Search and share description</label><textarea id="portfolio-description" className="field resize-y" rows={2} maxLength={180} value={description} onChange={(event) => changeMetadata(setDescription, event.target.value)} /></div>
                 <div><label htmlFor="portfolio-theme" className="field-label">Portfolio theme</label><select id="portfolio-theme" className="field" value={theme} onChange={(event) => { setTheme(event.target.value as PortfolioDocument["theme"]); markDirty(); }}><option value="atelier">Atelier</option><option value="nocturne">Nocturne</option><option value="gallery">Gallery</option></select></div>
               </div>

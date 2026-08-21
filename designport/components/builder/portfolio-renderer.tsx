@@ -8,9 +8,9 @@ export function PortfolioRenderer({ blocks, theme, publicPage = false, title = "
   return (
     <div
       className={cn(
-        "overflow-hidden bg-[#fbf7ef] text-[#211e22]",
-        theme === "nocturne" && "bg-[#171519] text-[#f8f2e8]",
-        theme === "gallery" && "bg-white text-[#151515]"
+        "min-h-screen overflow-hidden bg-[#f3eee3] text-[#171719]",
+        theme === "nocturne" && "bg-[#111216] text-[#f7f3ea]",
+        theme === "gallery" && "bg-white text-[#111214]"
       )}
     >
       {publicPage && firstHeroIndex < 0 && <h1 className="sr-only">{title}</h1>}

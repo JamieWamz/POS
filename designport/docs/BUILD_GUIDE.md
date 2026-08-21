@@ -4,7 +4,7 @@ This guide explains the design and engineering decisions behind the complete sou
 
 ## Product vision and design system
 
-DesignPort should feel like a quiet creative director: assured, specific and never louder than the user’s work. Its core loop is **compose → refine → publish**. The interface supports that loop with progressive disclosure and immediate, reversible feedback.
+DesignPort should feel like an independent editorial studio: assured, specific and unmistakably authored, while still giving the user’s work center stage. Its core loop is **compose → direct → release**. The interface supports that loop with progressive disclosure, immediate feedback and reversible actions.
 
 ### Typography
 
@@ -12,17 +12,18 @@ Cormorant Garamond is used only for display copy, where its calligraphic contras
 
 ### Color
 
-- Warm ivory (`#f7f4ee`) conveys craft and is gentler than clinical white.
-- Obsidian (`#1b1815`) conveys authority and creates strong accessible contrast.
-- Champagne (`#c9aa67`) signals refinement but is an accent, never the only state cue or small text on ivory.
-- Amethyst (`#7c5ce5`) marks interactivity and focus without imitating generic enterprise blue.
-- Dark surfaces retain warm undertones so theme changes preserve brand character.
+- Warm paper (`#f2efe8`) conveys craft and gives portfolio work a tactile editorial ground.
+- Near-black ink (`#121316`) creates authority, anchors large type and supplies strong accessible contrast.
+- Signal cobalt (`#3b55e6`–`#4f6cff`) marks primary action and focus with energetic, contemporary clarity.
+- Acid lime (`#cfff47`) calls attention to small brand moments and progress states; it is paired with near-black text and never carries meaning alone.
+- Coral (`#ff7657`) adds a controlled warm counterpoint in project imagery and feature surfaces.
+- Dark surfaces remain neutral rather than blue-tinted so authored portfolio colors stay accurate.
 
 All semantic pairs target WCAG 2.1 AA: 4.5:1 for normal text and 3:1 for large text and meaningful UI boundaries. Published/draft and saved/error states use text and icons as well as color.
 
 ### Spacing, shape and motion
 
-Spacing follows a 4 px base grid. Interactive targets are at least 44×44 px. Controls, cards and large page surfaces use 12, 16 and 24 px radii respectively, establishing hierarchy without decorative noise. Motion uses 160 ms for hover feedback, 240 ms for component changes and 400 ms for entrances. Framer Motion animates only opacity and transforms. `prefers-reduced-motion` reduces both Framer and CSS motion.
+Spacing follows a 4 px base grid. Interactive targets are at least 44×44 px. Controls, cards and large page surfaces use pill, 16 and 28 px radii respectively, separating utility actions from authored content. An 80 px editorial grid creates alignment across large marketing surfaces while a denser 32 px grid clarifies the builder workspace. Motion uses 160 ms for hover feedback, 240 ms for component changes and 400–650 ms for entrances. Framer Motion animates only opacity and transforms. `prefers-reduced-motion` reduces both Framer and CSS motion.
 
 ### Mobile-first breakpoints
 
@@ -47,16 +48,16 @@ Spacing follows a 4 px base grid. Interactive targets are at least 44×44 px. Co
 
 ## Sprint 1 — Foundation and brand system
 
-**Goal:** produce the responsive shell, luxury theme, persistent color preference, motion primitives and recoverable application states.
+**Goal:** produce the responsive editorial shell, persistent light/dark color system, motion primitives and recoverable application states.
 
 ### Design rationale before components
 
-- `Navbar` is intentionally sparse because stable orientation and one primary action reduce choice cost.
+- `Navbar` uses a compact wordmark, two anchored product links and one primary action so orientation stays clear without competing with the page narrative.
 - `ThemeToggle` is a 44 px icon control with a computed label because icon-only meaning must remain available to assistive technology.
 - `PageTransition` moves only eight pixels and focuses the new main landmark; this provides continuity without delaying navigation.
 - `Skeleton` mirrors final card geometry to reduce perceived wait and cumulative layout shift.
 - Error boundaries center one explanation and one recovery action because an error state should not compete for attention.
-- Landing feature cards use Gestalt proximity: each icon, title and explanation form one scan unit.
+- Landing feature cards use Gestalt proximity and controlled color blocking: each icon, index, title and explanation form one scan unit while the bento rhythm communicates range.
 
 ### Exact files added
 
