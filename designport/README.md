@@ -33,6 +33,12 @@ pnpm test
 pnpm build
 ```
 
+The build command packages Next.js static chunks, stylesheets, fonts and `public/` files into the standalone output. Run the optimized local server with:
+
+```bash
+PORT=3001 pnpm start
+```
+
 ## OAuth production setup
 
 - Set `NEXTAUTH_URL` to the canonical HTTPS origin.

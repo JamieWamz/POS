@@ -292,6 +292,7 @@ app/
 Dockerfile
 docker-compose.yml
 .dockerignore
+scripts/prepare-standalone.mjs
 vitest.config.ts
 tests/
 ├── setup.ts
@@ -306,7 +307,7 @@ docs/BUILD_GUIDE.md
 
 1. Add Vitest/jsdom setup and cover each block template plus route-sensitive validation.
 2. Enable standalone Next output and baseline security headers.
-3. Build development and multi-stage production Docker targets.
+3. Build development and multi-stage production Docker targets, then package static chunks, CSS, fonts and public assets into the standalone artifact.
 4. Compose Postgres and app services with persistent isolated volumes and readiness checks.
 5. Run migrations as a deployment/release concern and start production as an unprivileged user.
 6. Verify typecheck, lint, unit tests, production build, health endpoint and Docker configuration.
@@ -315,6 +316,7 @@ docs/BUILD_GUIDE.md
 
 - [ ] `pnpm typecheck`, `pnpm lint`, `pnpm test` and `pnpm build` all exit zero.
 - [ ] `docker compose config` resolves without errors and `docker compose up --build` becomes healthy.
+- [ ] The stylesheet and JavaScript URLs emitted in the home page return `200` from the standalone server with their correct MIME types.
 - [ ] `/api/health` returns 200 with reachable DB and 503 without it; neither response exposes credentials.
 - [ ] Response headers include no framework signature and include nosniff, frame denial, referrer and permission policies.
 - [ ] Production OAuth callbacks use the canonical HTTPS origin and secrets are injected outside the image.
